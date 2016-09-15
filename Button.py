@@ -5,7 +5,7 @@ pygame.font.init()
 
 class Button(pygame.Surface):
     all_buttons = []
-    button_text = pygame.font.Font('DejaVuSans.ttf', 15, bold=False)  # USE DEJAVU SANS
+    button_text = pygame.font.Font('DejaVuSans.ttf', 15)
     offset = -30
     highlight_level = 20
     indent = -10
