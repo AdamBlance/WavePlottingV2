@@ -5,12 +5,12 @@ from pygame.locals import *
 class ToggleButton(pygame.Surface):
     all_toggle_buttons = []
     toggle_button_text = pygame.font.Font('DejaVuSans.ttf', 15)
-    padding = 5
+    padding = 10
     text_colour = pygame.Color('#ebebeb')
     middle_colour = pygame.Color('#7c7a7a')
     mask_colour = (0, 0, 0)
 
-    steps_until_toggled = 10
+    steps_until_toggled = 20
 
     def __init__(self, pos, colour1, colour2, text1, text2):
 
@@ -42,8 +42,8 @@ class ToggleButton(pygame.Surface):
         rendered_text1 = self.toggle_button_text.render(text1, True, self.text_colour)
         rendered_text2 = self.toggle_button_text.render(text2, True, self.text_colour)
 
-        self.pre_mask.blit(rendered_text1, ((self.side_size/2) - (text_size2[0]/2), 0))
-        self.pre_mask.blit(rendered_text2, (self.side_size + middle_size + ((self.side_size/2) - (text_size1[0]/2)), 0))
+        self.pre_mask.blit(rendered_text1, ((self.side_size/2) - (text_size1[0]/2), 0))
+        self.pre_mask.blit(rendered_text2, (self.side_size + middle_size + ((self.side_size/2) - (text_size2[0]/2)), 0))
 
         self.blit(self.pre_mask, (self.slider_x, 0))
 
