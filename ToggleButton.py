@@ -26,31 +26,31 @@ class ToggleButton(pygame.Surface):
             text_size2 = self.toggle_button_text.size(text1)
 
         self.side_size = text_size1[0] + self.padding
-        middle_size = text_size1[1]
-        height = text_size1[1]
-        toggle_length = self.side_size*2 + middle_size
+        self.middle_size = text_size1[1]
+        self.height = text_size1[1]
+        self.toggle_length = self.side_size*2 + self.middle_size
 
-        surface_size = (toggle_length + self.side_size, height)
+        surface_size = (self.toggle_length + self.side_size, self.height)
         super().__init__(surface_size)
 
-        self.pre_mask = pygame.Surface((toggle_length, height))
+        self.pre_mask = pygame.Surface((self.toggle_length, self.height))
 
-        pygame.draw.rect(self.pre_mask, colour1, pygame.Rect((0, 0), (self.side_size, height)))
-        pygame.draw.rect(self.pre_mask, colour2, pygame.Rect((self.side_size + middle_size, 0), (self.side_size, height)))
+        pygame.draw.rect(self.pre_mask, colour1, pygame.Rect((0, 0), (self.side_size, self.height)))
+        pygame.draw.rect(self.pre_mask, colour2, pygame.Rect((self.side_size + self.middle_size, 0), (self.side_size, self.height)))
 
-        pygame.draw.rect(self.pre_mask, self.middle_colour, pygame.Rect((self.side_size, 0), (height, height)))
+        pygame.draw.rect(self.pre_mask, self.middle_colour, pygame.Rect((self.side_size, 0), (self.height, self.height)))
         rendered_text1 = self.toggle_button_text.render(text1, True, self.text_colour)
         rendered_text2 = self.toggle_button_text.render(text2, True, self.text_colour)
 
         self.pre_mask.blit(rendered_text1, ((self.side_size/2) - (text_size1[0]/2), 0))
-        self.pre_mask.blit(rendered_text2, (self.side_size + middle_size + ((self.side_size/2) - (text_size2[0]/2)), 0))
+        self.pre_mask.blit(rendered_text2, (self.side_size + self.middle_size + ((self.side_size/2) - (text_size2[0]/2)), 0))
 
         self.blit(self.pre_mask, (self.slider_x, 0))
 
         self.mask_layer = pygame.Surface(surface_size, SRCALPHA)
 
-        pygame.draw.rect(self.mask_layer, self.mask_colour, pygame.Rect((0, 0), (self.side_size, height)))
-        pygame.draw.rect(self.mask_layer, self.mask_colour, pygame.Rect((toggle_length, 0), (self.side_size, height)))
+        pygame.draw.rect(self.mask_layer, self.mask_colour, pygame.Rect((0, 0), (self.side_size, self.height)))
+        pygame.draw.rect(self.mask_layer, self.mask_colour, pygame.Rect((self.toggle_length, 0), (self.side_size, self.height)))
 
         self.blit(self.mask_layer, (0, 0))
         self.set_colorkey(self.mask_colour)
@@ -59,6 +59,11 @@ class ToggleButton(pygame.Surface):
         self.max_speed = (self.steps_until_toggled-1)*self.increment
         self.speed = 0
         self.toggled = False
+
+    def is_moused_over(self):
+        mouse_pos = pygame.mouse.get_pos()
+        moused_over = pygame.Rect((self.pos[0] + self.side_size, self.pos[1]), (self.middle_size + self.side_size, self.height)).collidepoint(mouse_pos)
+        return moused_over
 
     def redraw_surface(self):
         self.fill((0, 0, 0))

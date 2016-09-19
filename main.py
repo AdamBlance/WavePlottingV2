@@ -11,9 +11,9 @@ main_surface = pygame.display.set_mode((screen_width, screen_height), HWSURFACE)
 mouse = None
 
 my_sidebar = Sidebar((250, screen_height), pygame.Color('#30556c'), pygame.Color('#7c7a7a'))
-my_toggle_button = ToggleButton((200, 200), (200, 0, 0), (0, 200, 0), 'degrees', 'radians')
+my_toggle_button = ToggleButton((50, 100), (200, 0, 0), (0, 200, 0), 'degrees', 'radians')
 clock = pygame.time.Clock()
-penis = False
+temp = False
 running = True
 while running:
 
@@ -22,10 +22,8 @@ while running:
     for event in pygame.event.get():
         if event.type == QUIT:
             running = False
-        elif event.type == MOUSEBUTTONUP and MOUSEBUTTONDOWN:
+        elif event.type == MOUSEBUTTONUP or event.type == MOUSEBUTTONDOWN:
             mouse = event.type
-        elif event.type == KEYDOWN:
-            penis = True
     for button in Button.all_buttons:
         button.set_surface(mouse)
         main_surface.blit(button, button.pos)
@@ -64,13 +62,16 @@ while running:
         my_toggle_button.speed = 0
         my_toggle_button.slider_x = my_toggle_button.side_size
 
-    if penis:
-        my_toggle_button.turn_on()
-        penis = False
+    mouse_bool = my_toggle_button.is_moused_over()
+    if mouse_bool and mouse == MOUSEBUTTONDOWN:
+        if my_toggle_button.toggled:
+            my_toggle_button.turn_off()
+        else:
+            my_toggle_button.turn_on()
 
     my_toggle_button.redraw_surface()
 
-    main_surface.blit(my_toggle_button, my_toggle_button.pos)
+    my_sidebar.blit(my_toggle_button, my_toggle_button.pos)
     main_surface.blit(my_sidebar, (my_sidebar.x, 0))
 
     pygame.display.update()
