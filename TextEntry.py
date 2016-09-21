@@ -5,12 +5,23 @@ pygame.font.init()
 
 class TextEntry(pygame.Surface):
     all_text_entries = []
-    text_entry_text = pygame.font.Font('DejaVuSans.ttf', 20)
+    text_entry_text = pygame.font.Font('DejaVuSans.ttf', 15)
 
     ascii_dict = {
-        '-': '',
-        '=': '+'
-    }
+        '=': '+',
+        '1': '!',
+        '2': '2',
+        '3': '3',
+        '4': '4',
+        '5': '%',
+        '6': '^',
+        '7': '7',
+        '8': '*',
+        '9': '(',
+        '0': ')',
+        ',': '<',
+        '.': '>',
+        ' ': ' '}
 
     def __init__(self, pos, colour):
 
@@ -20,23 +31,22 @@ class TextEntry(pygame.Surface):
         self.colour = colour
         self.text = ''
 
-        self.normal_string = 'abcdefghijklmnopqrstuvwxyz1234567890 '
-        self.special_string = '-=+/<>!()^*|%'
-
     def add_text(self, char):
-        mod_mask = pygame.key.get_mods()
+        string = chr(char)
+        shifted = pygame.key.get_mods() & (KMOD_SHIFT | KMOD_CAPS)
 
-        if chr(char).isalpha():
-        if chr(char) in self.normal_string:
-            if chr(char).isalpha():
-                if mod_mask & 0b10000000000011:  # Combining bits if both are on
+        if (string.isalpha() or string in self.ascii_dict) and char < 128:
+            if shifted:
+                if string in self.ascii_dict:
+                    self.text += self.ascii_dict[string]
+                else:
                     self.text += chr(char-32)
-            self.text += chr(char)
-
-        # elif char == 8:
-        #         self.text = self.text[0:len(self.text)-1]
+            else:
+                self.text += string
+        elif char == 8:
+            self.text = self.text[:len(self.text)-1]
 
     def set_surface(self):
         self.fill((0, 0, 0, 0))
-        entry_text = self.text_entry_text.render(self.text, True, (255, 255, 255))
+        entry_text = self.text_entry_text.render(self.text, True, self.colour)
         self.blit(entry_text, (0, 0))

@@ -3,7 +3,7 @@ from pygame.locals import *
 from Button import Button
 from Sidebar import Sidebar
 from ToggleButton import ToggleButton
-# from TextEntry import TextEntry
+from TextEntry import TextEntry
 
 screen_width = 1280
 screen_height = 720
@@ -13,7 +13,7 @@ mouse = None
 
 my_sidebar = Sidebar((250, screen_height), pygame.Color('#30556c'), pygame.Color('#7c7a7a'))
 my_toggle_button = ToggleButton((screen_width - 200, 30), (200, 0, 0), (0, 200, 0), 'radians', 'degrees')
-# my_text_entry = TextEntry((200, 200), pygame.Color('green'))
+my_text_entry = TextEntry((15, 100), pygame.Color('#ebebeb'))
 clock = pygame.time.Clock()
 temp = False
 running = True
@@ -27,8 +27,7 @@ while running:
         elif event.type == MOUSEBUTTONUP or event.type == MOUSEBUTTONDOWN:
             mouse = event.type
         elif event.type == KEYDOWN:
-            pass
-            # my_text_entry.add_text(event.key)
+            my_text_entry.add_text(event.key)
     for button in Button.all_buttons:
         button.set_surface(mouse)
         main_surface.blit(button, button.pos)
@@ -76,9 +75,9 @@ while running:
 
     my_toggle_button.redraw_surface()
 
-    # my_text_entry.set_surface()
+    my_text_entry.set_surface()
 
-    # main_surface.blit(my_text_entry, my_text_entry.pos)
+    my_sidebar.blit(my_text_entry, my_text_entry.pos)
     main_surface.blit(my_toggle_button, my_toggle_button.pos)
     main_surface.blit(my_sidebar, (my_sidebar.x, 0))
 
