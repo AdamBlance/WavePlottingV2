@@ -15,13 +15,16 @@ class ToggleButton(pygame.Surface):
     def __init__(self, pos, colour1, colour2, text1, text2):
 
         self.slider_x = 0
-
         self.state = True
         self.pos = pos
+
+        temp = False
+
         if self.toggle_button_text.size(text1) > self.toggle_button_text.size(text2):
             text_size1 = self.toggle_button_text.size(text1)
             text_size2 = self.toggle_button_text.size(text2)
         else:
+            temp = True
             text_size1 = self.toggle_button_text.size(text2)
             text_size2 = self.toggle_button_text.size(text1)
 
@@ -41,6 +44,11 @@ class ToggleButton(pygame.Surface):
         pygame.draw.rect(self.pre_mask, self.middle_colour, pygame.Rect((self.side_size, 0), (self.height, self.height)))
         rendered_text1 = self.toggle_button_text.render(text1, True, self.text_colour)
         rendered_text2 = self.toggle_button_text.render(text2, True, self.text_colour)
+
+        if temp:  # Swaps sizes if larger text is first argument
+            temp = text_size1
+            text_size1 = text_size2
+            text_size2 = temp
 
         self.pre_mask.blit(rendered_text1, ((self.side_size/2) - (text_size1[0]/2), 0))
         self.pre_mask.blit(rendered_text2, (self.side_size + self.middle_size + ((self.side_size/2) - (text_size2[0]/2)), 0))
