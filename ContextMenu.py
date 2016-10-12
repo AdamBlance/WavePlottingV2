@@ -45,11 +45,11 @@ class ContextMenu(pygame.Surface):
                 text_alignment += self.context_menu_text.get_height() + 2*self.padding
                 segment_alignment += self.segment_size[1]
 
-    def is_moused_over(self, segment):
+    def is_moused_over(self, entry):
         mouse_pos = pygame.mouse.get_pos()
         local_x = mouse_pos[0] - self.pos[0]
         local_y = mouse_pos[1] - self.pos[1]
-
         index = int(local_y/self.segment_size[1])
         if (0 <= index <= len(self.entries)-1) and (0 <= local_x <= self.segment_size[0]):
-            return self.entries[index] == segment
+            return self.entries[index] == entry
+

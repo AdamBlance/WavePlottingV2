@@ -27,6 +27,8 @@ context = ContextMenu((200, 200), [back, forward, reload, view_source])
 
 my_graph = Graph((screen_width, screen_height))
 
+# todo: Make a parent class for all GUI elements
+
 clock = pygame.time.Clock()
 temp = False
 running = True
@@ -81,6 +83,17 @@ while running:
             my_toggle_button.turn_off()
         else:
             my_toggle_button.turn_on()
+
+    for entry in context.entries:
+        mouse_bool0 = context.is_moused_over(entry)
+        if mouse_bool0:
+            if mouse == MOUSEBUTTONDOWN:
+                entry.depressed = True
+            elif mouse == MOUSEBUTTONUP and entry.depressed:
+                entry.depressed = False
+                entry.call_function()
+        else:
+            entry.depressed = False
 
     my_toggle_button.redraw_surface()
 
