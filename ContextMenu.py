@@ -1,4 +1,5 @@
 import pygame
+from math import floor
 
 
 class ContextMenu(pygame.Surface):
@@ -49,7 +50,8 @@ class ContextMenu(pygame.Surface):
         mouse_pos = pygame.mouse.get_pos()
         local_x = mouse_pos[0] - self.pos[0]
         local_y = mouse_pos[1] - self.pos[1]
-        index = int(local_y/self.segment_size[1])
+        index = floor(local_y/self.segment_size[1])
+
         if (0 <= index <= len(self.entries)-1) and (0 <= local_x <= self.segment_size[0]):
             return self.entries[index] == entry
 
