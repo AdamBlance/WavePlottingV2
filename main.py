@@ -1,6 +1,5 @@
 import pygame
 from pygame.locals import *
-from Button import Button
 from Sidebar import Sidebar
 from ToggleButton import ToggleButton
 from TextEntry import TextEntry
@@ -24,7 +23,7 @@ forward = ContextMenuEntry('Forward', print, 'Forward')
 reload = ContextMenuEntry('Reload', print, 'Reload')
 view_source = ContextMenuEntry('View Source', print, 'View Source')
 
-context = ContextMenu((200, 200), (126, 0, 53), [back, forward, reload, view_source])
+context = ContextMenu((200, 200), [back, forward, reload, view_source])
 
 my_graph = Graph((screen_width, screen_height))
 
@@ -42,9 +41,6 @@ while running:
             mouse = event.type
         elif event.type == KEYDOWN:
             my_text_entry.add_text(event.key)
-    for button in Button.all_buttons:
-        button.set_surface(mouse)
-        main_surface.blit(button, button.pos)
 
     main_surface.fill(pygame.Color('#ebebeb'))
     my_sidebar.x += my_sidebar.speed
@@ -97,6 +93,7 @@ while running:
     main_surface.blit(my_toggle_button, my_toggle_button.pos)
     main_surface.blit(my_sidebar, (my_sidebar.x, 0))
 
+    context.set_surface()
     main_surface.blit(context, context.pos)
 
     pygame.display.update()
