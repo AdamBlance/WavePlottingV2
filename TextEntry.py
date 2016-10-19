@@ -1,9 +1,10 @@
 import pygame
 from pygame.locals import *
+from GUIObject import GUIObject
 pygame.font.init()
 
 
-class TextEntry(pygame.Surface):
+class TextEntry(GUIObject):
     all_text_entries = []
     text_entry_text = pygame.font.Font('DejaVuSans.ttf', 15)
 
@@ -25,7 +26,7 @@ class TextEntry(pygame.Surface):
 
     def __init__(self, pos, colour):
 
-        super().__init__((1000, 100), SRCALPHA)
+        super().__init__(pos, (1000, 100))
 
         self.pos = pos
         self.colour = colour

@@ -14,4 +14,3 @@ class Graph(pygame.Surface):
         pygame.draw.line(self, (0, 175, 0), (self.origin[0], 0), (self.origin[0], self.size[1]), 3)
         pygame.draw.line(self, (175, 0, 0), (0, self.origin[1]), (self.size[0], self.origin[1]), 3)
         pygame.draw.circle(self, (0, 0, 0), self.origin, 2)
-
