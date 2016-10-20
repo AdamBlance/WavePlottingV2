@@ -3,7 +3,6 @@ from pygame.locals import *
 
 from Sidebar import Sidebar
 from ToggleButton import ToggleButton
-from TextEntry import TextEntry
 from ContextMenu import ContextMenu
 from ContextMenuEntry import ContextMenuEntry
 from Graph import Graph

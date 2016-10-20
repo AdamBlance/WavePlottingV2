@@ -6,9 +6,6 @@ pygame.font.init()
 
 class Button(GUIObject):
     all_buttons = []
-    button_text = pygame.font.Font('DejaVuSans.ttf', 15)
-    offset = -30
-    highlight_level = 20
     indent = -8
     text_padding = 12
 
@@ -21,7 +18,7 @@ class Button(GUIObject):
         if size is not None:
             self.size = size
         else:
-            text_size = self.button_text.size(text)
+            text_size = self.main_font.size(text)
             self.size = (text_size[0] + self.text_padding, text_size[1] + self.text_padding)
 
         self.colour = colour
@@ -41,7 +38,7 @@ class Button(GUIObject):
         pygame.draw.rect(self.state2, self.highlighted, pygame.Rect((0, 0), self.size))
         pygame.draw.rect(self.state2, self.pressed, pygame.Rect((0, 0), self.size).inflate(self.indent, self.indent))
 
-        rendered_text = self.button_text.render(text, True, (255, 255, 255))
+        rendered_text = self.main_font.render(text, True, (255, 255, 255))
         super().__init__(pos, self.size)
 
         self.state0.blit(rendered_text, (self.text_padding/2, self.text_padding/2))

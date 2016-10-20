@@ -6,7 +6,6 @@ pygame.font.init()
 
 class TextEntry(GUIObject):
     all_text_entries = []
-    text_entry_text = pygame.font.Font('DejaVuSans.ttf', 15)
 
     ascii_dict = {
         '=': '+',
@@ -49,5 +48,5 @@ class TextEntry(GUIObject):
 
     def set_surface(self):
         self.fill((0, 0, 0, 0))
-        entry_text = self.text_entry_text.render(self.text, True, self.colour)
+        entry_text = self.main_font.render(self.text, True, self.colour)
         self.blit(entry_text, (0, 0))
