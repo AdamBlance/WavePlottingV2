@@ -5,7 +5,7 @@ pygame.font.init()
 
 class Sidebar(GUIObject):
     sidebar_text = pygame.font.Font('DejaVuSans.ttf', 20)
-    steps_until_popped = 15
+    steps_until_popped = 20
 
     def __init__(self, size, main_colour, tab_colour):
         self.x = -size[0]
@@ -13,8 +13,9 @@ class Sidebar(GUIObject):
         self.popped_out = False
         self.size = size
 
-        self.increment = (2*size[0]) / (self.steps_until_popped*(self.steps_until_popped-1))
-        self.max_speed = (self.steps_until_popped-1)*self.increment
+        self.increment = (2*size[0]) / (self.steps_until_popped*(self.steps_until_popped+1))
+        self.max_speed = self.steps_until_popped*self.increment
+        print(self.increment, self.max_speed)
 
         super().__init__((0, 0), (size[0] + 10, size[1]))
         self.fill(main_colour)

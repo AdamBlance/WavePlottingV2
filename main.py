@@ -45,6 +45,7 @@ while running:
             mouse = event.type
         elif event.type == KEYDOWN:
             pass
+
     main_surface.fill(pygame.Color('#ebebeb'))
     my_sidebar.x += my_sidebar.speed
     if my_sidebar.speed < 0:
