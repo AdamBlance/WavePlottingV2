@@ -1,4 +1,4 @@
-class Curve:
+class Transition:
     steps = 20
 
     def __init__(self, distance):
