@@ -43,28 +43,16 @@ while running:
             running = False
         elif event.type == MOUSEBUTTONUP or event.type == MOUSEBUTTONDOWN:
             mouse = event.type
-        elif event.type == KEYDOWN:
-            pass
 
     main_surface.fill(pygame.Color('#ebebeb'))
-    my_sidebar.x += my_sidebar.speed
-    if my_sidebar.speed < 0:
-        my_sidebar.speed += my_sidebar.increment
-    elif my_sidebar.speed > 0:
-        my_sidebar.speed -= my_sidebar.increment
+
+    my_sidebar.x += my_sidebar.transition.speed
 
     mouse_pos = pygame.mouse.get_pos()
-    if not my_sidebar.popped_out and mouse_pos[0] < 10:
+    if mouse_pos[0] < 10:
         my_sidebar.pop_out()
-    elif my_sidebar.popped_out and mouse_pos[0] > my_sidebar.size[0]:
+    elif mouse_pos[0] > my_sidebar.size[0]:
         my_sidebar.pop_in()
-
-    if my_sidebar.x < -my_sidebar.size[0]:
-        my_sidebar.speed = 0
-        my_sidebar.x = -my_sidebar.size[0]
-    elif my_sidebar.x > 0:
-        my_sidebar.speed = 0
-        my_sidebar.x = 0
 
     my_toggle_button.slider_x += my_toggle_button.speed
     if my_toggle_button.speed < 0:
@@ -101,6 +89,8 @@ while running:
 
     my_graph.draw_grid()
 
+    my_sidebar.update()
+
     main_surface.blit(my_graph, (0, 0))
     main_surface.blit(my_toggle_button, my_toggle_button.pos)
     main_surface.blit(my_sidebar, (my_sidebar.x, 0))
@@ -112,5 +102,6 @@ while running:
     main_surface.blit(my_button, my_button.pos)
 
     pygame.display.update()
+
     mouse = None
 pygame.quit()
