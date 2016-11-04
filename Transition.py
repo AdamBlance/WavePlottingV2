@@ -9,17 +9,17 @@ class Transition:
         self.in_use = False
         self.toggled = False
 
-        self.is_negative = True
         self.current_step = 0
 
     def update(self):
 
         if self.in_use:
             self.current_step += 1
-            if self.is_negative:
+            if self.toggled:
                 self.speed -= self.increment
             else:
                 self.speed += self.increment
+
             if self.current_step > self.steps:
                 self.current_step = 0
                 self.speed = 0
@@ -29,6 +29,5 @@ class Transition:
                 else:
                     self.toggled = True
 
-    def start(self, negative=False):
+    def start(self):
         self.in_use = True
-        self.is_negative = negative

@@ -46,14 +46,6 @@ while running:
 
     main_surface.fill(pygame.Color('#ebebeb'))
 
-    my_sidebar.x += my_sidebar.transition.speed
-
-    mouse_pos = pygame.mouse.get_pos()
-    if mouse_pos[0] < 10:
-        my_sidebar.pop_out()
-    elif mouse_pos[0] > my_sidebar.size[0]:
-        my_sidebar.pop_in()
-
     my_toggle_button.slider_x += my_toggle_button.speed
     if my_toggle_button.speed < 0:
         my_toggle_button.speed += my_toggle_button.increment

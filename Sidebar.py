@@ -22,12 +22,19 @@ class Sidebar(GUIObject):
         self.blit(expression_text, (0, 0))
 
     def update(self):
+        self.x += self.transition.speed
+
+        mouse_pos = pygame.mouse.get_pos()
+        if mouse_pos[0] < 10:
+            self.pop_out()
+        elif mouse_pos[0] > self.size[0]:
+            self.pop_in()
         self.transition.update()
 
     def pop_out(self):
         if not self.transition.in_use and not self.transition.toggled:
-            self.transition.start(False)
+            self.transition.start()
 
     def pop_in(self):
         if not self.transition.in_use and self.transition.toggled:
-            self.transition.start(True)
+            self.transition.start()
