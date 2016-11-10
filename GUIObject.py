@@ -1,5 +1,5 @@
 import pygame
-pygame.font.init()
+pygame.init()
 
 
 class GUIObject(pygame.Surface):
@@ -11,4 +11,5 @@ class GUIObject(pygame.Surface):
 
     def __init__(self, pos, size):
         self.pos = pos
+        self.size = size
         super().__init__(size)

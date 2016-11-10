@@ -9,12 +9,10 @@ class Sidebar(GUIObject):
     steps_until_popped = 20
 
     def __init__(self, size, main_colour, tab_colour):
-        self.x = -size[0]
-        self.size = size
 
         self.transition = Transition(size[0])
 
-        super().__init__((0, 0), (size[0] + 10, size[1]))
+        super().__init__([-size[0], 0], (size[0] + 10, size[1]))
         self.fill(main_colour)
         pygame.draw.rect(self, tab_colour, pygame.Rect((size[0], 0), (10, size[1])))
 
@@ -22,7 +20,7 @@ class Sidebar(GUIObject):
         self.blit(expression_text, (0, 0))
 
     def update(self):
-        self.x += self.transition.speed
+        self.pos[0] += self.transition.speed
 
         mouse_pos = pygame.mouse.get_pos()
         if mouse_pos[0] < 10:

@@ -8,6 +8,9 @@ from ContextMenuEntry import ContextMenuEntry
 from Graph import Graph
 from Button import Button
 
+# todo: Write a state machine class for the event queue
+# todo: Write a class for clickable objects to prevent duplicate code
+
 screen_width = 1280
 screen_height = 720
 main_surface = pygame.display.set_mode((screen_width, screen_height), HWSURFACE)
@@ -15,7 +18,7 @@ main_surface = pygame.display.set_mode((screen_width, screen_height), HWSURFACE)
 mouse = None
 
 my_sidebar = Sidebar((250, screen_height), pygame.Color('#30556c'), pygame.Color('#7c7a7a'))
-my_toggle_button = ToggleButton((screen_width - 200, 30), (200, 0, 0), (0, 200, 0), 'degrees', 'radians')
+my_toggle_button = ToggleButton([screen_width - 200, 30], 'degrees', 'radians')
 
 back = ContextMenuEntry('Back', print, 'Back')
 forward = ContextMenuEntry('Forward', print, 'Forward')
@@ -46,26 +49,6 @@ while running:
 
     main_surface.fill(pygame.Color('#ebebeb'))
 
-    my_toggle_button.slider_x += my_toggle_button.speed
-    if my_toggle_button.speed < 0:
-        my_toggle_button.speed += my_toggle_button.increment
-    elif my_toggle_button.speed > 0:
-        my_toggle_button.speed -= my_toggle_button.increment
-
-    if my_toggle_button.slider_x < 0:
-        my_toggle_button.speed = 0
-        my_toggle_button.slider_x = 0
-    elif my_toggle_button.slider_x >= my_toggle_button.side_size:
-        my_toggle_button.speed = 0
-        my_toggle_button.slider_x = my_toggle_button.side_size
-
-    mouse_bool = my_toggle_button.is_moused_over()
-    if mouse_bool and mouse == MOUSEBUTTONDOWN:
-        if my_toggle_button.toggled:
-            my_toggle_button.turn_off()
-        else:
-            my_toggle_button.turn_on()
-
     for entry in context.entries:
         mouse_bool0 = context.is_moused_over(entry)
         if mouse_bool0:
@@ -77,15 +60,14 @@ while running:
         else:
             entry.depressed = False
 
-    my_toggle_button.redraw_surface()
+    my_toggle_button.update()
 
     my_graph.draw_grid()
 
     my_sidebar.update()
 
     main_surface.blit(my_graph, (0, 0))
-    main_surface.blit(my_toggle_button, my_toggle_button.pos)
-    main_surface.blit(my_sidebar, (my_sidebar.x, 0))
+    main_surface.blit(my_sidebar, my_sidebar.pos)
 
     context.set_surface()
     main_surface.blit(context, context.pos)
@@ -93,6 +75,7 @@ while running:
     my_button.set_surface(mouse)
     main_surface.blit(my_button, my_button.pos)
 
+    main_surface.blit(my_toggle_button, my_toggle_button.pos)
     pygame.display.update()
 
     mouse = None

@@ -27,7 +27,6 @@ class TextEntry(GUIObject):
 
         super().__init__(pos, (1000, 100))
 
-        self.pos = pos
         self.colour = colour
         self.text = ''
 
