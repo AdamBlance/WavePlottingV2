@@ -1,25 +1,27 @@
 import pygame
-from pygame.locals import *
 from GUIObject import GUIObject
 pygame.font.init()
 
 
 class Button(GUIObject):
     all_buttons = []
-    indent = -8
-    text_padding = 12
 
     highlighted = pygame.Color(255, 162, 31)
     pressed = pygame.Color(75, 75, 75)
 
-    def __init__(self, pos, colour, text, function, *args, size=None):
+    def __init__(self, event_manager, pos, colour, text, function, *args, size=None):
+
+        indent = -6
+        text_padding = abs(indent - self.padding)
+
         self.depressed = False
+        self.event_manager = event_manager
 
         if size is not None:
             self.size = size
         else:
             text_size = self.main_font.size(text)
-            self.size = (text_size[0] + self.text_padding, text_size[1] + self.text_padding)
+            self.size = (text_size[0] + 2*text_padding, text_size[1] + 2*text_padding)
 
         self.colour = colour
         self.function = function
@@ -30,20 +32,20 @@ class Button(GUIObject):
         self.state2 = pygame.Surface(self.size)  # Pressed
 
         pygame.draw.rect(self.state0, self.pressed, pygame.Rect((0, 0), self.size))
-        pygame.draw.rect(self.state0, colour, pygame.Rect((0, 0), self.size).inflate(self.indent, self.indent))
+        pygame.draw.rect(self.state0, colour, pygame.Rect((0, 0), self.size).inflate(indent, indent))
 
         pygame.draw.rect(self.state1, self.highlighted, pygame.Rect((0, 0), self.size))
-        pygame.draw.rect(self.state1, colour, pygame.Rect((0, 0), self.size).inflate(self.indent, self.indent))
+        pygame.draw.rect(self.state1, colour, pygame.Rect((0, 0), self.size).inflate(indent, indent))
 
         pygame.draw.rect(self.state2, self.highlighted, pygame.Rect((0, 0), self.size))
-        pygame.draw.rect(self.state2, self.pressed, pygame.Rect((0, 0), self.size).inflate(self.indent, self.indent))
+        pygame.draw.rect(self.state2, self.pressed, pygame.Rect((0, 0), self.size).inflate(indent, indent))
 
         rendered_text = self.main_font.render(text, True, (255, 255, 255))
         super().__init__(pos, self.size)
 
-        self.state0.blit(rendered_text, (self.text_padding/2, self.text_padding/2))
-        self.state1.blit(rendered_text, (self.text_padding/2, self.text_padding/2))
-        self.state2.blit(rendered_text, (self.text_padding/2, self.text_padding/2))
+        self.state0.blit(rendered_text, (text_padding, text_padding))
+        self.state1.blit(rendered_text, (text_padding, text_padding))
+        self.state2.blit(rendered_text, (text_padding, text_padding))
 
         self.all_buttons.append(self)
 
@@ -55,19 +57,19 @@ class Button(GUIObject):
     def call_function(self):
         self.function(*self.arguments)
 
-    def set_surface(self, mouse_event):
-        mouse_bool = self.is_moused_over()
-        if mouse_bool and mouse_event == MOUSEBUTTONDOWN:
+    def update(self):
+        moused_over = self.is_moused_over()
+        if moused_over and self.event_manager.lmb_down:
             self.depressed = True
-        elif mouse_bool and mouse_event == MOUSEBUTTONUP and self.depressed:
+        elif moused_over and self.event_manager.lmb_up and self.depressed:
             self.depressed = False
             self.call_function()
-        elif not mouse_bool:
+        elif not moused_over:
             self.depressed = False
 
-        if self.depressed and mouse_bool:
+        if self.depressed:
             self.blit(self.state2, (0, 0))
-        elif mouse_bool:
+        elif moused_over:
             self.blit(self.state1, (0, 0))
         else:
             self.blit(self.state0, (0, 0))

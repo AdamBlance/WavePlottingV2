@@ -8,9 +8,15 @@ class ToggleButton(GUIObject):
     all_toggle_buttons = []
     middle_colour = pygame.Color('#7c7a7a')
 
-    def __init__(self, pos, text1, text2):
+    def __init__(self, event_manager, pos, text1, text2):
+
+        # todo: Add length
+        # todo: Fix the transition so that it rounds up
+
+        self.event_manager = event_manager
 
         temp = False
+        self.depressed = False
 
         if self.main_font.size(text1) > self.main_font.size(text2):
             text_size1 = self.main_font.size(text1)
@@ -31,6 +37,7 @@ class ToggleButton(GUIObject):
         super().__init__(pos, surface_size)
 
         self.pre_mask = pygame.Surface((self.toggle_length, self.height))
+        self.pre_mask_x = 0
 
         pygame.draw.rect(self.pre_mask, pygame.Color(200, 0, 0), pygame.Rect((0, 0), (self.side_size, self.height)))
         pygame.draw.rect(self.pre_mask, pygame.Color(0, 200, 0), pygame.Rect((self.side_size + self.middle_size, 0),
@@ -70,9 +77,18 @@ class ToggleButton(GUIObject):
 
     def update(self):
 
-        self.pos[0] += self.transition.speed
+        moused_over = self.is_moused_over()
+        if moused_over and self.event_manager.lmb_down:
+            self.depressed = True
+        elif moused_over and self.event_manager.lmb_up and self.depressed:
+            self.depressed = False
+            self.toggle()
+        elif not moused_over:
+            self.depressed = False
 
-        self.blit(self.pre_mask, (0, 0))
+        self.pre_mask_x += self.transition.speed
+
+        self.blit(self.pre_mask, (self.pre_mask_x, 0))
         self.blit(self.mask_layer, (0, 0))
 
         self.transition.update()

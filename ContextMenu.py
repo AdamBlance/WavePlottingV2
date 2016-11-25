@@ -5,12 +5,12 @@ from GUIObject import GUIObject
 class ContextMenu(GUIObject):
     colour = pygame.Color(100, 100, 100)
     highlight_colour = pygame.Color(255, 162, 31)
-    context_menu_text = pygame.font.Font('DejaVuSans.ttf', 15)
 
-    def __init__(self, pos, entries):
+    def __init__(self, event_manager, pos, entries):
+
+        self.event_manager = event_manager
+
         self.entries = entries
-
-        self.opacity = 255
 
         index = 0
         max_len = len(entries[0].text)
@@ -20,30 +20,44 @@ class ContextMenu(GUIObject):
                 max_len = current
                 index = i
 
-        self.segment_size = (2*self.padding + self.context_menu_text.size(entries[index].text)[0],
-                             2*self.padding + self.context_menu_text.get_height())
+        self.segment_size = (2*self.padding + self.main_font.size(entries[index].text)[0],
+                             2*self.padding + self.main_font.get_height())
 
-        self.state0 = pygame.Surface(self.segment_size)
-        self.state0.fill(self.colour)
+        self.grey = pygame.Surface(self.segment_size)
+        self.grey.fill(self.colour)
 
-        self.state1 = pygame.Surface(self.segment_size)
-        self.state1.fill(self.highlight_colour)
+        self.highlighted = pygame.Surface(self.segment_size)
+        self.highlighted.fill(self.highlight_colour)
+
+        self.all_rendered_states = {}
+
+        for i in range(0, len(self.entries)):
+            rendered_text = self.main_font.render(self.entries[i].text, True, self.font_colour)
+            grey_copy = self.grey.copy()
+            highlighted_copy = self.highlighted.copy()
+
+            grey_copy.blit(rendered_text, (self.padding, self.padding))
+            highlighted_copy.blit(rendered_text, (self.padding, self.padding))
+
+            self.all_rendered_states['state_%s' % i] = grey_copy
+            self.all_rendered_states['highlight_state_%s' % i] = highlighted_copy
 
         size = self.segment_size[0], self.segment_size[1]*len(entries)
         super().__init__(pos, size)
 
-    def set_surface(self):
-        text_alignment = self.padding
+    def update(self):
         segment_alignment = 0
-        for entry in self.entries:
-            if self.is_moused_over(entry):
-                self.blit(self.state1, (0, segment_alignment))
+        for i in range(0, len(self.entries)):
+            if self.is_moused_over(self.entries[i]):
+                self.blit(self.all_rendered_states['highlight_state_%s' % i], (0, segment_alignment))
+                if self.event_manager.lmb_down:
+                    self.entries[i].depressed = True
+                if self.event_manager.lmb_up and self.entries[i].depressed:
+                    self.entries[i].depressed = False
+                    self.entries[i].call_function()
             else:
-                self.blit(self.state0, (0, segment_alignment))
-            rendered_text = self.context_menu_text.render(entry.text, True, (255, 255, 255))
-            self.blit(rendered_text, (self.padding, text_alignment))
-            if self.entries[-1] != entry:
-                text_alignment += self.context_menu_text.get_height() + 2*self.padding
+                self.blit(self.all_rendered_states['state_%s' % i], (0, segment_alignment))
+            if self.entries[-1] != self.entries[i]:
                 segment_alignment += self.segment_size[1]
 
     def is_moused_over(self, entry):
@@ -55,6 +69,3 @@ class ContextMenu(GUIObject):
         if (0 <= index <= len(self.entries)-1) and (0 <= local_x <= self.segment_size[0]):
             # todo: Override equals
             return self.entries[index] == entry
-
-    def fade_in(self):
-        self.opacity = 0

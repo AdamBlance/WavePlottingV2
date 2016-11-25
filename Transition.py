@@ -1,6 +1,8 @@
 class Transition:
     steps = 20
 
+    # todo: option for exponential or logarithmic
+
     def __init__(self, distance):
         self.increment = (2*distance) / (self.steps*(self.steps+1))
         self.initial_speed = self.steps*self.increment
