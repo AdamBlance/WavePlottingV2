@@ -31,7 +31,7 @@ class ToggleButton(GUIObject):
         self.height = text_size1[1]
         self.toggle_length = self.side_size*2 + self.middle_size
 
-        self.transition = Transition(self.side_size)
+        self.transition = Transition(0, self.side_size)
 
         surface_size = (self.toggle_length + self.side_size, self.height)
         super().__init__(pos, surface_size)
@@ -86,7 +86,7 @@ class ToggleButton(GUIObject):
         elif not moused_over:
             self.depressed = False
 
-        self.pre_mask_x += self.transition.speed
+        self.pre_mask_x = self.transition.pos
 
         self.blit(self.pre_mask, (self.pre_mask_x, 0))
         self.blit(self.mask_layer, (0, 0))
