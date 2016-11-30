@@ -1,8 +1,6 @@
 class Transition:
     steps = 20
 
-    # todo: option for exponential or logarithmic
-
     def __init__(self, pos, distance):
 
         self.original_pos = pos
@@ -24,11 +22,11 @@ class Transition:
 
             self.current_step += 1
             if self.toggled:
-                self.pos += self.value
+                self.pos -= self.value
                 self.value -= self.increment
             else:
-                self.value += self.increment
                 self.pos += self.value
+                self.value -= self.increment
 
             if self.current_step > self.steps:
 
@@ -44,3 +42,4 @@ class Transition:
 
     def start(self):
         self.in_use = True
+        self.value = self.initial_speed
