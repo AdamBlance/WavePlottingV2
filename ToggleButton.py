@@ -11,7 +11,6 @@ class ToggleButton(GUIObject):
     def __init__(self, event_manager, pos, text1, text2):
 
         # todo: Add length
-        # todo: Fix the transition so that it rounds up
 
         self.event_manager = event_manager
 

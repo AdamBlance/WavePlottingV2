@@ -41,5 +41,6 @@ class Transition:
                     self.pos = self.extended_pos
 
     def start(self):
-        self.in_use = True
-        self.value = self.initial_speed
+        if not self.in_use:
+            self.in_use = True
+            self.value = self.initial_speed
