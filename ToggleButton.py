@@ -61,8 +61,6 @@ class ToggleButton(GUIObject):
         pygame.draw.rect(self.mask_layer, (0, 0, 0), pygame.Rect((0, 0), (self.side_size, self.height)))
         pygame.draw.rect(self.mask_layer, (0, 0, 0), pygame.Rect((self.toggle_length, 0),
                                                                  (self.side_size, self.height)))
-
-        self.blit(self.mask_layer, (0, 0))
         self.set_colorkey((0, 0, 0))
 
     def is_moused_over(self):
