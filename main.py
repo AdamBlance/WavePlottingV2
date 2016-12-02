@@ -4,7 +4,6 @@ from Sidebar import Sidebar
 from ToggleButton import ToggleButton
 from ContextMenu import ContextMenu
 from ContextMenuEntry import ContextMenuEntry
-from Graph import Graph
 from Button import Button
 from EventManager import EventManager
 
@@ -16,9 +15,9 @@ event_manager = EventManager()
 
 my_sidebar = Sidebar((250, screen_height), pygame.Color('#30556c'), pygame.Color('#7c7a7a'))
 
-my_toggle_button = ToggleButton(event_manager, [screen_width - 200, 30], 'degrees', 'radians')
+my_toggle_button = ToggleButton(event_manager, (95, 25), [screen_width - 200, 30], 'degrees', 'radians')
 
-my_button = Button(event_manager, (500, 200), pygame.Color(100, 100, 100), 'Sample Text', print, 'Sample Text')
+my_button = Button(event_manager, (500, 200), pygame.Color(100, 100, 100), 'X', print, 'Sample Text')
 
 back = ContextMenuEntry('Back', print, 'Back')
 forward = ContextMenuEntry('Forward', print, 'Forward')

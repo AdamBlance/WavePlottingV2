@@ -8,32 +8,27 @@ class ToggleButton(GUIObject):
     all_toggle_buttons = []
     middle_colour = pygame.Color('#7c7a7a')
 
-    def __init__(self, event_manager, pos, text1, text2):
-
-        # todo: Add length
+    def __init__(self, event_manager, size, pos, text1, text2):
 
         self.event_manager = event_manager
 
-        temp = False
         self.depressed = False
 
-        if self.main_font.size(text1) > self.main_font.size(text2):
-            text_size1 = self.main_font.size(text1)
-            text_size2 = self.main_font.size(text2)
-        else:
-            temp = True
-            text_size1 = self.main_font.size(text2)
-            text_size2 = self.main_font.size(text1)
+        self.width = size[0]
+        self.height = size[1]
 
-        self.side_size = text_size1[0] + self.padding
-        self.middle_size = text_size1[1]
-        self.height = text_size1[1]
-        self.toggle_length = self.side_size*2 + self.middle_size
+        self.side_size = (self.width - self.height) + 2*self.padding
+        self.middle_size = self.height
+        self.height = self.height
+        self.toggle_length = 2*self.side_size + self.middle_size
 
         self.transition = Transition(0, self.side_size)
 
         surface_size = (self.toggle_length + self.side_size, self.height)
         super().__init__(pos, surface_size)
+
+        self.rendered_text1_size = self.main_font.size(text1)
+        self.rendered_text2_size = self.main_font.size(text2)
 
         self.pre_mask = pygame.Surface((self.toggle_length, self.height))
         self.pre_mask_x = 0
@@ -44,23 +39,24 @@ class ToggleButton(GUIObject):
 
         pygame.draw.rect(self.pre_mask, self.middle_colour, pygame.Rect((self.side_size, 0),
                                                                         (self.height, self.height)))
+
         rendered_text1 = self.main_font.render(text1, True, self.font_colour)
         rendered_text2 = self.main_font.render(text2, True, self.font_colour)
 
-        if temp:  # Swaps sizes if larger text is first argument
-            temp = text_size1
-            text_size1 = text_size2
-            text_size2 = temp
+        print(self.rendered_text1_size)
 
-        self.pre_mask.blit(rendered_text1, ((self.side_size/2) - (text_size1[0]/2), 0))
+        self.pre_mask.blit(rendered_text1, ((self.side_size/2)-self.rendered_text1_size[0]/2,
+                                            (self.height/2)-(self.rendered_text1_size[1]/2)))
         self.pre_mask.blit(rendered_text2,
-                           (self.side_size + self.middle_size + ((self.side_size/2) - (text_size2[0]/2)), 0))
+                           (self.side_size + self.middle_size + (self.side_size/2)-self.rendered_text2_size[0]/2,
+                            (self.height/2)-(self.rendered_text1_size[1]/2)))
 
         self.mask_layer = pygame.Surface(surface_size, SRCALPHA)
 
         pygame.draw.rect(self.mask_layer, (0, 0, 0), pygame.Rect((0, 0), (self.side_size, self.height)))
         pygame.draw.rect(self.mask_layer, (0, 0, 0), pygame.Rect((self.toggle_length, 0),
                                                                  (self.side_size, self.height)))
+
         self.set_colorkey((0, 0, 0))
 
     def is_moused_over(self):

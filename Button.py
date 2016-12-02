@@ -21,7 +21,7 @@ class Button(GUIObject):
             self.size = size
         else:
             text_size = self.main_font.size(text)
-            self.size = (text_size[0] + 2*text_padding, text_size[1] + 2*text_padding)
+            self.size = (text_size[0] + 2*text_padding, text_size[1] + text_padding)
 
         self.colour = colour
         self.function = function
@@ -43,9 +43,9 @@ class Button(GUIObject):
         rendered_text = self.main_font.render(text, True, (255, 255, 255))
         super().__init__(pos, self.size)
 
-        self.state0.blit(rendered_text, (text_padding, text_padding))
-        self.state1.blit(rendered_text, (text_padding, text_padding))
-        self.state2.blit(rendered_text, (text_padding, text_padding))
+        self.state0.blit(rendered_text, (text_padding, text_padding/2))
+        self.state1.blit(rendered_text, (text_padding, text_padding/2))
+        self.state2.blit(rendered_text, (text_padding, text_padding/2))
 
         self.all_buttons.append(self)
 
