@@ -43,8 +43,6 @@ class ToggleButton(GUIObject):
         rendered_text1 = self.main_font.render(text1, True, self.font_colour)
         rendered_text2 = self.main_font.render(text2, True, self.font_colour)
 
-        print(self.rendered_text1_size)
-
         self.pre_mask.blit(rendered_text1, ((self.side_size/2)-self.rendered_text1_size[0]/2,
                                             (self.height/2)-(self.rendered_text1_size[1]/2)))
         self.pre_mask.blit(rendered_text2,

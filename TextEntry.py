@@ -23,29 +23,31 @@ class TextEntry(GUIObject):
         '.': '>',
         ' ': ' '}
 
-    def __init__(self, pos, colour):
+    def __init__(self, event_manager, pos, colour):
 
         super().__init__(pos, (1000, 100))
 
         self.colour = colour
         self.text = ''
+        self.event_manager = event_manager
 
-    def add_text(self, char):
-        string = chr(char)
-        shifted = pygame.key.get_mods() & (KMOD_SHIFT | KMOD_CAPS)
+    def add_text(self):
+        for char in self.event_manager.keys_pressed:
+            string = chr(char)
 
-        if (string.isalpha() or string in self.ascii_dict) and char < 128:
-            if shifted:
-                if string in self.ascii_dict:
-                    self.text += self.ascii_dict[string]
+            if (string.isalpha() or string in self.ascii_dict) and char < 128:
+                if self.event_manager.shift_held:
+                    if string in self.ascii_dict:
+                        self.text += self.ascii_dict[string]
+                    else:
+                        self.text += chr(char-32)
                 else:
-                    self.text += chr(char-32)
-            else:
-                self.text += string
-        elif char == 8:
-            self.text = self.text[:len(self.text)-1]
+                    self.text += string
+            elif char == 8:
+                self.text = self.text[:len(self.text)-1]
 
-    def set_surface(self):
+    def update(self):
         self.fill((0, 0, 0, 0))
-        entry_text = self.main_font.render(self.text, True, self.colour)
+        entry_text = self.main_font.render('testthing', True, self.colour)
+        # entry_text = self.main_font.render(self.text, True, self.colour)
         self.blit(entry_text, (0, 0))

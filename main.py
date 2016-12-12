@@ -6,12 +6,19 @@ from ContextMenu import ContextMenu
 from ContextMenuEntry import ContextMenuEntry
 from Button import Button
 from EventManager import EventManager
+from TextEntry import TextEntry
+
+from Function import Function
+
+# test_function = Function('sin', 'limits')
+
 
 screen_width = 1280
 screen_height = 720
 main_surface = pygame.display.set_mode((screen_width, screen_height))
 
 event_manager = EventManager()
+my_text_entry = TextEntry(event_manager, (400, 300), (255, 255, 255))
 
 my_sidebar = Sidebar((250, screen_height), pygame.Color('#30556c'), pygame.Color('#7c7a7a'))
 
@@ -30,22 +37,27 @@ clock = pygame.time.Clock()
 
 running = True
 while not event_manager.has_quit:
+    if event_manager.screen_focused:
+        clock.tick(60)
+        event_manager.update()
 
-    clock.tick(60)
-    event_manager.update()
+        my_toggle_button.update()
+        my_sidebar.update()
+        context.update()
+        my_button.update()
+        my_text_entry.update()
 
-    my_toggle_button.update()
-    my_sidebar.update()
-    context.update()
-    my_button.update()
+        main_surface.fill(pygame.Color('#ebebeb'))
 
-    main_surface.fill(pygame.Color('#ebebeb'))
+        main_surface.blit(my_sidebar, my_sidebar.pos)
+        main_surface.blit(context, context.pos)
+        main_surface.blit(my_button, my_button.pos)
+        main_surface.blit(my_toggle_button, my_toggle_button.pos)
+        main_surface.blit(my_text_entry, my_text_entry.pos)
+        pygame.display.update()
 
-    main_surface.blit(my_sidebar, my_sidebar.pos)
-    main_surface.blit(context, context.pos)
-    main_surface.blit(my_button, my_button.pos)
-    main_surface.blit(my_toggle_button, my_toggle_button.pos)
-
-    pygame.display.update()
+    else:
+        clock.tick(6)
+        event_manager.update()
 
 pygame.quit()

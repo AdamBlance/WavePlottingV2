@@ -1,4 +1,5 @@
 import pygame
+from pygame.locals import *
 pygame.init()
 
 
@@ -18,4 +19,5 @@ class GUIObject(pygame.Surface):
     def __init__(self, pos, size):
         self.pos = pos
         self.size = size
-        super().__init__(size)
+        # super().__init__(size)
+        super().__init__(size, SRCALPHA)

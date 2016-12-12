@@ -5,12 +5,16 @@ from pygame.locals import *
 class EventManager:
 
     def __init__(self):
-        self.lmb_down = None
-        self.lmb_up = None
-        self.rmb_down = None
-        self.rmb_up = None
+        self.lmb_down = False
+        self.lmb_up = False
+        self.rmb_down = False
+        self.rmb_up = False
 
-        self.screen_focused = None
+        self.shift_held = False
+
+        self.keys_pressed = []
+
+        self.screen_focused = True
         self.has_quit = False
 
     def reset_states(self):
@@ -18,14 +22,19 @@ class EventManager:
         self.lmb_up = False
         self.rmb_down = False
         self.rmb_up = False
+        self.keys_pressed = []
 
     def update(self):
 
         self.reset_states()
 
         for event in pygame.event.get():
+
             if event.type == QUIT:
                 self.has_quit = True
+
+            elif event.type == KEYDOWN:
+                self.keys_pressed.append(event.key)
 
             elif event.type == ACTIVEEVENT:
                 self.screen_focused = event.gain
@@ -41,3 +50,5 @@ class EventManager:
                     self.lmb_up = True
                 elif event.button == 3:
                     self.rmb_up = True
+
+        self.shift_held = pygame.key.get_mods() & (KMOD_SHIFT | KMOD_CAPS)
