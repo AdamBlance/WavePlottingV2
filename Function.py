@@ -1,14 +1,11 @@
 import sympy as sy
 from functions import all_functions
-from re import split
 # Doing this to avoid Python limitation. It cannot be made a static variable because I'm using list comprehension.
 
 
 class Function:
 
     def __init__(self, function, limits):
-
-        print(function)
 
         self.unformatted_function = self.unformatted_function.replace(' ', '').replace('^', '**')
 

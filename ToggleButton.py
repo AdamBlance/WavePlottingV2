@@ -13,7 +13,6 @@ class ToggleButton(GUIObject):
         self.event_manager = event_manager
 
         self.depressed = False
-
         self.width = size[0]
         self.height = size[1]
 

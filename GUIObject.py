@@ -1,9 +1,5 @@
 import pygame
-from pygame.locals import *
 pygame.init()
-
-
-# ASK ABOUT EVENT_MANAGER INHERITANCE
 
 
 class GUIObject(pygame.Surface):
@@ -15,9 +11,8 @@ class GUIObject(pygame.Surface):
     font_colour = pygame.Color('#ebebeb')
 
     # todo: Add colour themes
-
+    # todo: Make is_moused_over part of this class and override it in the ContextMenu class
     def __init__(self, pos, size):
         self.pos = pos
         self.size = size
-        # super().__init__(size)
-        super().__init__(size, SRCALPHA)
+        super().__init__(size)

@@ -10,9 +10,9 @@ class TextEntry(GUIObject):
     ascii_dict = {
         '=': '+',
         '1': '!',
-        '2': '2',
-        '3': '3',
-        '4': '4',
+        '2': '@',
+        '3': '#',
+        '4': '$',
         '5': '%',
         '6': '^',
         '7': '7',
@@ -31,7 +31,8 @@ class TextEntry(GUIObject):
         self.text = ''
         self.event_manager = event_manager
 
-    def add_text(self):
+    def update(self):
+
         for char in self.event_manager.keys_pressed:
             string = chr(char)
 
@@ -46,8 +47,6 @@ class TextEntry(GUIObject):
             elif char == 8:
                 self.text = self.text[:len(self.text)-1]
 
-    def update(self):
         self.fill((0, 0, 0, 0))
-        entry_text = self.main_font.render('testthing', True, self.colour)
-        # entry_text = self.main_font.render(self.text, True, self.colour)
+        entry_text = self.main_font.render(self.text, True, self.colour)
         self.blit(entry_text, (0, 0))

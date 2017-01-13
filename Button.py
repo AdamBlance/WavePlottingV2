@@ -6,16 +6,18 @@ pygame.font.init()
 class Button(GUIObject):
     all_buttons = []
 
-    highlighted = pygame.Color(255, 162, 31)
+    highlighted = pygame.Color(150, 150, 150)
     pressed = pygame.Color(75, 75, 75)
 
-    def __init__(self, event_manager, pos, colour, text, function, *args, size=None):
+    def __init__(self, event_manager, pos, colour, text, function, *args, size=None, gui_object_blitted_to=None):
 
         indent = -6
         text_padding = abs(indent - self.padding)
 
         self.depressed = False
         self.event_manager = event_manager
+
+        self.blitted_to = gui_object_blitted_to
 
         if size is not None:
             self.size = size
@@ -51,7 +53,23 @@ class Button(GUIObject):
 
     def is_moused_over(self):
         mouse_pos = pygame.mouse.get_pos()
-        moused_over = pygame.Rect(self.pos, self.size).collidepoint(mouse_pos)
+        if self.blitted_to is not None:
+
+            global_coordinates = self.pos
+            lower_layer = self.blitted_to
+
+            no_local_layer_below = False
+            while no_local_layer_below is False:
+                try:
+                    global_coordinates = (lower_layer.pos[0] + global_coordinates[0],
+                                          lower_layer.pos[1] + global_coordinates[1])
+                    lower_layer = lower_layer.blitted_to
+                except AttributeError:
+                    no_local_layer_below = True
+
+            moused_over = pygame.Rect(global_coordinates, self.size).collidepoint(mouse_pos)
+        else:
+            moused_over = pygame.Rect((self.pos[0], self.pos[1]), self.size).collidepoint(mouse_pos)
         return moused_over
 
     def call_function(self):
