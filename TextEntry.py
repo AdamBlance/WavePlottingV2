@@ -1,20 +1,24 @@
 import pygame
-from pygame.locals import *
 from GUIObject import GUIObject
+from io import BytesIO
+from matplotlib.mathtext import math_to_image
+from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application, convert_equals_signs
+from sympy import latex
 pygame.font.init()
 
 
 class TextEntry(GUIObject):
     all_text_entries = []
+    parsing_flags = (implicit_multiplication_application, convert_equals_signs) + standard_transformations
 
     ascii_dict = {
         '=': '+',
         '1': '!',
-        '2': '@',
-        '3': '#',
-        '4': '$',
+        '2': '2',
+        '3': '3',
+        '4': '4',
         '5': '%',
-        '6': '^',
+        '6': '**',
         '7': '7',
         '8': '*',
         '9': '(',
@@ -23,15 +27,33 @@ class TextEntry(GUIObject):
         '.': '>',
         ' ': ' '}
 
-    def __init__(self, event_manager, pos, colour):
+    def __init__(self, event_manager, pos, colour, gui_object_blitted_to=None):
 
         super().__init__(pos, (1000, 100))
 
         self.colour = colour
         self.text = ''
         self.event_manager = event_manager
+        self.input = ''
+        self.invalid_function = False
+
+        self.function_surface = pygame.Surface((200, 200))
+
+    def parse(self, string_function):
+        if string_function.replace(' ', '') == '':
+            return None
+        else:
+            try:
+                sympy_function = parse_expr(string_function, transformations=self.parsing_flags, evaluate=False)
+                self.invalid_function = False
+                return sympy_function
+            except SyntaxError:
+                self.invalid_function = True
+                return None
 
     def update(self):
+
+        self.fill((255, 255, 255))
 
         for char in self.event_manager.keys_pressed:
             string = chr(char)
@@ -45,8 +67,14 @@ class TextEntry(GUIObject):
                 else:
                     self.text += string
             elif char == 8:
-                self.text = self.text[:len(self.text)-1]
+                self.text = self.text[:-1]
 
-        self.fill((0, 0, 0, 0))
-        entry_text = self.main_font.render(self.text, True, self.colour)
-        self.blit(entry_text, (0, 0))
+        parsed_function = self.parse(self.text)
+
+        if parsed_function is not None:
+            buffer = BytesIO()
+            latex_function = '$' + latex(parsed_function) + '$'
+            math_to_image(latex_function, buffer, dpi=150, format='png')
+            buffer.seek(0)
+            self.function_surface = pygame.image.load(buffer)
+            self.blit(self.function_surface, (0, 0))
