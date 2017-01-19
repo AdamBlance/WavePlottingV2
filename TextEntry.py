@@ -77,4 +77,5 @@ class TextEntry(GUIObject):
             math_to_image(latex_function, buffer, dpi=150, format='png')
             buffer.seek(0)
             self.function_surface = pygame.image.load(buffer)
+            buffer.close()
             self.blit(self.function_surface, (0, 0))
