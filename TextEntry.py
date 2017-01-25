@@ -29,7 +29,7 @@ class TextEntry(GUIObject):
 
     def __init__(self, event_manager, pos, colour, gui_object_blitted_to=None):
 
-        super().__init__(pos, (1000, 100))
+        super().__init__(pos, (1000, 100)),
 
         self.colour = colour
         self.text = ''
