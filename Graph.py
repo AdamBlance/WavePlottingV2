@@ -5,7 +5,7 @@ from FunctionBox import FunctionBox
 
 
 class Graph(pygame.Surface):
-    function_resolution = 8  # int > 0
+    function_resolution = 1  # int > 0
 
     def __init__(self, event_manager, size):
         super().__init__(size, SRCALPHA)
@@ -22,9 +22,6 @@ class Graph(pygame.Surface):
         self.x_max = 2*pie
         self.y_min = -9/16*2*pie
         self.y_max = 9/16*2*pie
-
-        self.x_increment = abs(self.x_max - self.x_min)/size[0]*-1
-        self.y_increment = abs(self.y_max - self.y_min)/size[1]
 
         self.x = symbols('x')
 
@@ -60,13 +57,31 @@ class Graph(pygame.Surface):
 
     def update(self):
         self.fill(pygame.Color('#ebebeb'))
+
+        x_increment = abs(self.x_max - self.x_min)/self.size[0]
+        y_increment = abs(self.y_max - self.y_min)/self.size[1]
+
         mouse_rel = pygame.mouse.get_rel()
         if self.event_manager.lmb_held:
-            mouse_x = mouse_rel[0]*self.x_increment
-            mouse_y = mouse_rel[1]*self.y_increment
+            mouse_x = mouse_rel[0]*x_increment*-1
+            mouse_y = mouse_rel[1]*y_increment
             self.x_min += mouse_x
             self.x_max += mouse_x
             self.y_min += mouse_y
             self.y_max += mouse_y
 
-        self.draw_function(sin(self.x))
+        x_indent = abs(self.x_max - self.x_min) / 10
+        y_indent = abs(self.y_max - self.y_min) / 10
+
+        if self.event_manager.scrolled_up:
+            self.x_min += x_indent
+            self.x_max -= x_indent
+            self.y_min += y_indent
+            self.y_max -= y_indent
+        elif self.event_manager.scrolled_down:
+            self.x_min -= x_indent
+            self.x_max += x_indent
+            self.y_min -= y_indent
+            self.y_max += y_indent
+
+        self.draw_function(sin(self.x) + cos(4*self.x))

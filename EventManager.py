@@ -11,6 +11,8 @@ class EventManager:
         self.rmb_down = False
         self.rmb_up = False
         self.rmb_held = False
+        self.scrolled_up = False
+        self.scrolled_down = False
 
         self.shift_held = False
 
@@ -24,6 +26,8 @@ class EventManager:
         self.lmb_up = False
         self.rmb_down = False
         self.rmb_up = False
+        self.scrolled_up = False
+        self.scrolled_down = False
         self.keys_pressed = []
 
     def update(self):
@@ -45,6 +49,10 @@ class EventManager:
                 elif event.button == 3:
                     self.rmb_down = True
                     self.rmb_held = True
+                elif event.button == 4:
+                    self.scrolled_up = True
+                elif event.button == 5:
+                    self.scrolled_down = True
 
             elif event.type == MOUSEBUTTONUP:
                 if event.button == 1:
