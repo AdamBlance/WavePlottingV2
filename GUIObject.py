@@ -5,7 +5,7 @@ pygame.init()
 class GUIObject(pygame.Surface):
     padding = 2
 
-    # having padding in here is stupid
+    # should only update objects if they need updated as blitting every frame is slow
 
     main_font = pygame.font.Font('DejaVuSans.ttf', 15)
     font_colour = pygame.Color('#ebebeb')

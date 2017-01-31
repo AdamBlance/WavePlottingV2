@@ -7,8 +7,10 @@ class EventManager:
     def __init__(self):
         self.lmb_down = False
         self.lmb_up = False
+        self.lmb_held = False
         self.rmb_down = False
         self.rmb_up = False
+        self.rmb_held = False
 
         self.shift_held = False
 
@@ -36,19 +38,20 @@ class EventManager:
             elif event.type == KEYDOWN:
                 self.keys_pressed.append(event.key)
 
-            elif event.type == ACTIVEEVENT:
-                self.screen_focused = event.gain
-
             elif event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     self.lmb_down = True
+                    self.lmb_held = True
                 elif event.button == 3:
                     self.rmb_down = True
+                    self.rmb_held = True
 
             elif event.type == MOUSEBUTTONUP:
                 if event.button == 1:
                     self.lmb_up = True
+                    self.lmb_held = False
                 elif event.button == 3:
                     self.rmb_up = True
+                    self.rmb_held = False
 
         self.shift_held = pygame.key.get_mods() & (KMOD_SHIFT | KMOD_CAPS)

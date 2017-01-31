@@ -36,7 +36,7 @@ class TextEntry(GUIObject):
         self.event_manager = event_manager
         self.input = ''
         self.invalid_function = False
-
+        self.parsed_function = None
         self.function_surface = pygame.Surface((200, 200))
 
     def parse(self, string_function):
@@ -69,11 +69,11 @@ class TextEntry(GUIObject):
             elif char == 8:
                 self.text = self.text[:-1]
 
-        parsed_function = self.parse(self.text)
+        self.parsed_function = self.parse(self.text)
 
-        if parsed_function is not None:
+        if self.parsed_function is not None:
             buffer = BytesIO()
-            latex_function = '$' + latex(parsed_function) + '$'
+            latex_function = '$' + latex(self.parsed_function) + '$'
             math_to_image(latex_function, buffer, dpi=150, format='png')
             buffer.seek(0)
             self.function_surface = pygame.image.load(buffer)
