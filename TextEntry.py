@@ -2,14 +2,21 @@ import pygame
 from GUIObject import GUIObject
 from io import BytesIO
 from matplotlib.mathtext import math_to_image
-from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application, convert_equals_signs
+from sympy.parsing.sympy_parser import \
+    parse_expr, \
+    standard_transformations, \
+    implicit_multiplication_application, \
+    function_exponentiation, \
+    convert_xor
 from sympy import latex
 pygame.font.init()
 
 
 class TextEntry(GUIObject):
     all_text_entries = []
-    parsing_flags = (implicit_multiplication_application, convert_equals_signs) + standard_transformations
+    parsing_flags = standard_transformations + (implicit_multiplication_application,
+                                                function_exponentiation,
+                                                convert_xor)
 
     ascii_dict = {
         '=': '+',
@@ -18,7 +25,7 @@ class TextEntry(GUIObject):
         '3': '3',
         '4': '4',
         '5': '%',
-        '6': '**',
+        '6': '^',
         '7': '7',
         '8': '*',
         '9': '(',

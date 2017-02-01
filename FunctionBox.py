@@ -10,6 +10,8 @@ class FunctionBox(GUIObject):
     def __init__(self, event_manager, pos, size, gui_object_blitted_to):
         super().__init__(pos, size)
 
+        self.event_manager = event_manager
+
         self.blitted_to = gui_object_blitted_to
         self.fill((255, 255, 255))
 
@@ -20,7 +22,8 @@ class FunctionBox(GUIObject):
         self.all_function_boxes.append(self)
 
     def update(self):
-        self.delete_button.update()
-        self.text_entry.update()
-        self.blit(self.delete_button, self.delete_button.pos)
-        self.blit(self.text_entry, self.text_entry.pos)
+        if self.event_manager.keys_pressed:
+            self.delete_button.update()
+            self.text_entry.update()
+            self.blit(self.delete_button, self.delete_button.pos)
+            self.blit(self.text_entry, self.text_entry.pos)
