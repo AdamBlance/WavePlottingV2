@@ -1,7 +1,6 @@
 import pygame
 from pygame.locals import *
 from sympy import *
-from FunctionBox import FunctionBox
 
 
 class Graph(pygame.Surface):
@@ -13,15 +12,17 @@ class Graph(pygame.Surface):
         self.event_manager = event_manager
 
         self.size = size
-        self.segment_size = 10
 
         self.screen_ratio = self.size[1]/self.size[0]
-
         pie = float(pi)
         self.x_min = -2*pie
         self.x_max = 2*pie
         self.y_min = -9/16*2*pie
         self.y_max = 9/16*2*pie
+
+        self.line_spacing = pie
+        self.current_x_lines = None
+        self.current_y_lines = None
 
         self.x = symbols('x')
 
@@ -38,14 +39,13 @@ class Graph(pygame.Surface):
 
     def graph_to_screen_x(self, x_coord):
         x = ((x_coord - self.x_min) / (self.x_max - self.x_min)) * self.size[0]
-        return x
+        return int(x)
 
     def graph_to_screen_y(self, y_coord):
         y = ((y_coord - self.y_max) / (self.y_min - self.y_max)) * self.size[1]
-        return y
+        return int(y)
 
     def draw_function(self, function):
-
         point_array = []
         subbable = lambdify(self.x, function, 'numpy')
         for pixel in range(0, self.size[0], self.function_resolution):
@@ -58,8 +58,30 @@ class Graph(pygame.Surface):
     def update(self):
         self.fill(pygame.Color('#ebebeb'))
 
-        x_increment = abs(self.x_max - self.x_min)/self.size[0]
-        y_increment = abs(self.y_max - self.y_min)/self.size[1]
+        origin = (self.graph_to_screen_x(0), self.graph_to_screen_y(0))
+        pygame.draw.circle(self, pygame.Color('blue'), origin, 5)
+
+        if self.current_x_lines is not None:
+            if self.current_x_lines > 16:
+                self.line_spacing *= 2
+            elif self.current_x_lines < 8:
+                self.line_spacing /= 2
+        self.current_x_lines = round((self.x_max-self.x_min)/self.line_spacing)
+        self.current_y_lines = round((self.y_max-self.y_min)/self.line_spacing)
+        last_x_line = int(self.x_min/self.line_spacing)*self.line_spacing
+        last_y_line = int(self.y_min/self.line_spacing)*self.line_spacing
+
+        for i in range(self.current_x_lines + 1):
+            x_point = self.graph_to_screen_x(last_x_line + i*self.line_spacing)
+            pygame.draw.line(self, pygame.Color('grey'), (x_point, 0), (x_point, self.size[1]))
+            y_point = self.graph_to_screen_y(last_y_line + i*self.line_spacing)
+            pygame.draw.line(self, pygame.Color('grey'), (0, y_point), (self.size[0], y_point))
+
+        x_range = abs(self.x_max-self.x_min)
+        y_range = abs(self.x_max-self.x_min)
+
+        x_increment = x_range/self.size[0]
+        y_increment = y_range/self.size[1]
 
         mouse_rel = pygame.mouse.get_rel()
         if self.event_manager.lmb_held:
@@ -70,18 +92,18 @@ class Graph(pygame.Surface):
             self.y_min += mouse_y
             self.y_max += mouse_y
 
-        x_indent = abs(self.x_max - self.x_min) / 10
-        y_indent = abs(self.y_max - self.y_min) / 10
+        x_indent = x_range/10
+        y_indent = y_range/10
 
-        if self.event_manager.scrolled_up:
+        if self.event_manager.scrolled_up or K_UP in self.event_manager.keys_pressed:
             self.x_min += x_indent
             self.x_max -= x_indent
             self.y_min += y_indent
             self.y_max -= y_indent
-        elif self.event_manager.scrolled_down:
+        elif self.event_manager.scrolled_down or K_DOWN in self.event_manager.keys_pressed:
             self.x_min -= x_indent
             self.x_max += x_indent
             self.y_min -= y_indent
             self.y_max += y_indent
 
-        self.draw_function(sin(self.x) + cos(4*self.x))
+        self.draw_function(sin(self.x))
