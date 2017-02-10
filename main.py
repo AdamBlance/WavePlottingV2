@@ -32,10 +32,9 @@ while not event_manager.has_quit:
     my_graph.update()
 
     main_surface.blit(my_graph, (0, 0))
-
-    my_sidebar.blit(my_function_box, my_function_box.pos)
-    main_surface.blit(my_sidebar, my_sidebar.pos)
     main_surface.blit(my_toggle_button, my_toggle_button.pos)
+    main_surface.blit(my_sidebar, my_sidebar.pos)
+    my_sidebar.blit(my_function_box, my_function_box.pos)
     pygame.display.update()
 
 pygame.quit()

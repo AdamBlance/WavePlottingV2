@@ -56,10 +56,8 @@ class Graph(pygame.Surface):
         pygame.draw.lines(self, pygame.Color('red'), False, point_array)
 
     def update(self):
-        self.fill(pygame.Color('#ebebeb'))
 
-        origin = (self.graph_to_screen_x(0), self.graph_to_screen_y(0))
-        pygame.draw.circle(self, pygame.Color('blue'), origin, 5)
+        self.fill(pygame.Color('#ebebeb'))
 
         if self.current_x_lines is not None:
             if self.current_x_lines > 16:
@@ -92,18 +90,21 @@ class Graph(pygame.Surface):
             self.y_min += mouse_y
             self.y_max += mouse_y
 
-        x_indent = x_range/10
-        y_indent = y_range/10
-
         if self.event_manager.scrolled_up or K_UP in self.event_manager.keys_pressed:
-            self.x_min += x_indent
-            self.x_max -= x_indent
-            self.y_min += y_indent
-            self.y_max -= y_indent
+            self.x_min *= 0.9
+            self.x_max *= 0.9
+            self.y_min *= 0.9
+            self.y_max *= 0.9
+
         elif self.event_manager.scrolled_down or K_DOWN in self.event_manager.keys_pressed:
-            self.x_min -= x_indent
-            self.x_max += x_indent
-            self.y_min -= y_indent
-            self.y_max += y_indent
+            self.x_min *= 1.1
+            self.x_max *= 1.1
+            self.y_min *= 1.1
+            self.y_max *= 1.1
+        print((self.x_max-self.x_min)/(self.y_max-self.y_min))
+
+        origin = (self.graph_to_screen_x(0), self.graph_to_screen_y(0))
+        if self.x_min < 0 < self.x_max and self.y_min < 0 < self.y_max:
+            pygame.draw.circle(self, pygame.Color('blue'), origin, 5)
 
         self.draw_function(sin(self.x))
