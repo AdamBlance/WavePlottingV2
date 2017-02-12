@@ -101,7 +101,6 @@ class Graph(pygame.Surface):
             self.x_max *= 1.1
             self.y_min *= 1.1
             self.y_max *= 1.1
-        print((self.x_max-self.x_min)/(self.y_max-self.y_min))
 
         origin = (self.graph_to_screen_x(0), self.graph_to_screen_y(0))
         if self.x_min < 0 < self.x_max and self.y_min < 0 < self.y_max:
