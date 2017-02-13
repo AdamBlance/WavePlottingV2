@@ -26,6 +26,9 @@ while not event_manager.has_quit:
     clock.tick(60)
     event_manager.update()
 
+    if my_toggle_button.was_clicked:
+        my_graph.toggle_degrees()
+
     my_function_box.update()
     my_toggle_button.update()
     my_sidebar.update()

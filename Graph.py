@@ -1,10 +1,12 @@
 import pygame
 from pygame.locals import *
 from sympy import *
+from math import degrees
 
 
 class Graph(pygame.Surface):
     function_resolution = 1  # int > 0
+    number_font = pygame.font.SysFont('Ubuntu Mono', 12)
 
     def __init__(self, event_manager, size):
         super().__init__(size, SRCALPHA)
@@ -12,8 +14,10 @@ class Graph(pygame.Surface):
         self.event_manager = event_manager
 
         self.size = size
-
         self.screen_ratio = self.size[1]/self.size[0]
+
+        self.is_radians = True
+
         pie = float(pi)
         self.x_min = -2*pie
         self.x_max = 2*pie
@@ -26,8 +30,11 @@ class Graph(pygame.Surface):
 
         self.x = symbols('x')
 
-    def shift_screen(self, x, y):
-        pass
+    def toggle_degrees(self):
+        if self.is_radians:
+            self.is_radians = False
+        else:
+            self.is_radians = True
 
     def screen_to_graph_x(self, x_coord):
         x = (x_coord / self.size[0]) * (self.x_max - self.x_min) + self.x_min
@@ -70,9 +77,29 @@ class Graph(pygame.Surface):
         last_y_line = int(self.y_min/self.line_spacing)*self.line_spacing
 
         for i in range(self.current_x_lines + 1):
-            x_point = self.graph_to_screen_x(last_x_line + i*self.line_spacing)
+            graph_x = last_x_line + i*self.line_spacing
+            x_point = self.graph_to_screen_x(graph_x)
             pygame.draw.line(self, pygame.Color('grey'), (x_point, 0), (x_point, self.size[1]))
+
+            if not self.is_radians:
+                numbers = degrees(graph_x)
+            else:
+                numbers = graph_x
+
+            origin_x = self.graph_to_screen_x(0)
+            origin_y = self.graph_to_screen_y(0)
+            print(origin_y, self.y_max)
+            if origin_y < 0:
+                x_text_pos = 0
+            elif origin_y > self.size[1]:
+                x_text_pos = self.size[1]-15
+            else:
+                x_text_pos = self.graph_to_screen_y(0)
+
+            rendered_text = self.number_font.render(str(round(numbers, 3)), True, pygame.Color('grey'))
+
             y_point = self.graph_to_screen_y(last_y_line + i*self.line_spacing)
+            self.blit(rendered_text, (x_point, x_text_pos))
             pygame.draw.line(self, pygame.Color('grey'), (0, y_point), (self.size[0], y_point))
 
         x_range = abs(self.x_max-self.x_min)
@@ -102,8 +129,8 @@ class Graph(pygame.Surface):
             self.y_min *= 1.1
             self.y_max *= 1.1
 
-        origin = (self.graph_to_screen_x(0), self.graph_to_screen_y(0))
-        if self.x_min < 0 < self.x_max and self.y_min < 0 < self.y_max:
-            pygame.draw.circle(self, pygame.Color('blue'), origin, 5)
+        # if self.origin_visible():
+        #     origin = (self.graph_to_screen_x(0), self.graph_to_screen_y(0))
+        #     pygame.draw.circle(self, pygame.Color('blue'), origin, 5)
 
         self.draw_function(sin(self.x))

@@ -12,6 +12,7 @@ class ToggleButton(GUIObject):
 
         self.event_manager = event_manager
 
+        self.was_clicked = False
         self.depressed = False
         self.width = size[0]
         self.height = size[1]
@@ -63,10 +64,12 @@ class ToggleButton(GUIObject):
         return moused_over
 
     def toggle(self):
+        self.was_clicked = True
         self.transition.start()
 
     def update(self):
 
+        self.was_clicked = False
         moused_over = self.is_moused_over()
         if moused_over and self.event_manager.lmb_down:
             self.depressed = True
