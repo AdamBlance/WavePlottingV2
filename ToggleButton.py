@@ -64,7 +64,8 @@ class ToggleButton(GUIObject):
         return moused_over
 
     def toggle(self):
-        self.was_clicked = True
+        if not self.transition.in_use:
+            self.was_clicked = True
         self.transition.start()
 
     def update(self):

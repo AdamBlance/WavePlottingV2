@@ -18,7 +18,7 @@ event_manager = EventManager()
 my_sidebar = Sidebar((300, screen_height), pygame.Color('#30556c'), pygame.Color('#7c7a7a'))
 my_function_box = FunctionBox(event_manager, (0, 100), (300, 75), my_sidebar)
 my_toggle_button = ToggleButton(event_manager, (95, 25), [screen_width - 220, 30], 'degrees', 'radians')
-my_graph = Graph(event_manager, (screen_width, screen_height))
+my_graph = Graph(event_manager, (10, 0), (screen_width, screen_height))
 
 clock = pygame.time.Clock()
 while not event_manager.has_quit:
@@ -34,7 +34,7 @@ while not event_manager.has_quit:
     my_sidebar.update()
     my_graph.update()
 
-    main_surface.blit(my_graph, (0, 0))
+    main_surface.blit(my_graph, my_graph.pos)
     main_surface.blit(my_toggle_button, my_toggle_button.pos)
     main_surface.blit(my_sidebar, my_sidebar.pos)
     my_sidebar.blit(my_function_box, my_function_box.pos)
