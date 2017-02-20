@@ -15,15 +15,15 @@ class Graph(GUIObject):
         self.event_manager = event_manager
 
         self.size = size
-        self.screen_ratio = self.size[1]/self.size[0]
 
         self.is_radians = True
 
         pie = float(pi)
+        ratio = self.size[1]/self.size[0]
         self.x_min = -2*pie
         self.x_max = 2*pie
-        self.y_min = -9/16*2*pie
-        self.y_max = 9/16*2*pie
+        self.y_min = -ratio*2*pie
+        self.y_max = ratio*2*pie
 
         self.x_line_spacing = pie
         self.y_line_spacing = 1
@@ -79,27 +79,22 @@ class Graph(GUIObject):
 
     def draw_gridlines(self):
 
-        self.x_line_spacing = self.limit_lines(self.current_x_lines, self.x_line_spacing)
-        self.y_line_spacing = self.limit_lines(self.current_y_lines, self.y_line_spacing)
-        self.current_x_lines = round((self.x_max-self.x_min)/self.x_line_spacing)
-        self.current_y_lines = round((self.y_max-self.y_min)/self.y_line_spacing)
-        last_x_line = int(self.x_min/self.x_line_spacing)*self.x_line_spacing
         last_y_line = int(self.y_min/self.y_line_spacing)*self.y_line_spacing
+        self.current_y_lines = round((self.y_max-self.y_min)/self.y_line_spacing)
+        self.y_line_spacing = self.limit_lines(self.current_y_lines, self.y_line_spacing)
 
         for i in range(self.current_y_lines + 2):
             graph_y = last_y_line + i*self.y_line_spacing
             y_point = self.graph_to_screen_y(graph_y)
-            if not self.is_radians:
-                y_numbers = degrees(graph_y)
-            else:
-                y_numbers = graph_y
+            y_numbers = graph_y
 
             origin_x = self.graph_to_screen_x(0)
+            text_size = self.small_main_font.size(str(y_numbers) + '0')[0] + 5
             if origin_x < 0:
-                y_text_pos = 0
+                y_text_pos = 3
                 self.y_lines_offset = True
-            elif origin_x > self.size[0]-15:
-                y_text_pos = self.size[0]-15
+            elif origin_x > self.size[0]-text_size:
+                y_text_pos = self.size[0]-text_size
                 self.y_lines_offset = True
             else:
                 y_text_pos = origin_x
@@ -109,6 +104,10 @@ class Graph(GUIObject):
                 rendered_text = self.small_main_font.render(str(round(y_numbers, 3)), True, pygame.Color('black'))
                 self.blit(rendered_text, (y_text_pos, y_point))
             pygame.draw.line(self, pygame.Color('grey'), (0, y_point), (self.size[0], y_point))
+
+        last_x_line = int(self.x_min/self.x_line_spacing)*self.x_line_spacing
+        self.current_x_lines = round((self.x_max-self.x_min)/self.x_line_spacing)
+        self.x_line_spacing = self.limit_lines(self.current_x_lines, self.x_line_spacing)
 
         for i in range(self.current_x_lines + 1):
             graph_x = last_x_line + i*self.x_line_spacing
@@ -129,10 +128,11 @@ class Graph(GUIObject):
                 x_text_pos = origin_y
                 self.x_lines_offset = False
 
+            # TODO: Scientific notation
+
             if not (self.y_lines_offset and graph_x == 0):
-                # rendered_text = self.small_main_font.render(value, True, pygame.Color('black'))
                 if x_numbers != 0:
-                    coefficient = Fraction(x_numbers/float(pi))
+                    coefficient = Fraction(round(x_numbers/float(pi), 8))
                     if coefficient.denominator != 1:
                         rendered_text = self.small_main_font.render('%s|%s\u03C0' % (coefficient.numerator, coefficient.denominator), True, pygame.Color('black'))
                     else:
