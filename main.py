@@ -29,6 +29,9 @@ while not event_manager.has_quit:
     if my_toggle_button.was_clicked:
         my_graph.toggle_degrees()
 
+    # my_graph.x_min += 0.1
+    # my_graph.x_max += 0.1
+
     my_function_box.update()
     my_toggle_button.update()
     my_sidebar.update()

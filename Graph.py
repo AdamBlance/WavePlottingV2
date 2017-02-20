@@ -3,11 +3,11 @@ import pygame
 from pygame.locals import *
 from sympy import *
 from math import degrees
+from fractions import Fraction
 
 
 class Graph(GUIObject):
     function_resolution = 1  # int > 0
-    number_font = pygame.font.SysFont('Ubuntu Mono', 14)
 
     def __init__(self, event_manager, pos, size):
         super().__init__(pos, size)
@@ -25,7 +25,8 @@ class Graph(GUIObject):
         self.y_min = -9/16*2*pie
         self.y_max = 9/16*2*pie
 
-        self.line_spacing = pie
+        self.x_line_spacing = pie
+        self.y_line_spacing = 1
         self.current_x_lines = None
         self.current_y_lines = None
 
@@ -66,20 +67,27 @@ class Graph(GUIObject):
             point_array.append((pixel, y_coord))
         pygame.draw.lines(self, pygame.Color('red'), False, point_array)
 
-    def draw_gridlines(self):
-        if self.current_x_lines is not None:
-            if self.current_x_lines > 16:
-                self.line_spacing *= 2
-            elif self.current_x_lines < 8:
-                self.line_spacing /= 2
+    @staticmethod
+    def limit_lines(current_lines, spacing):
+        new_space = spacing
+        if current_lines is not None:
+            if current_lines > 16:
+                new_space *= 2
+            elif current_lines < 8:
+                new_space /= 2
+        return new_space
 
-        self.current_x_lines = round((self.x_max-self.x_min)/self.line_spacing)
-        self.current_y_lines = round((self.y_max-self.y_min)/self.line_spacing)
-        last_x_line = int(self.x_min/self.line_spacing)*self.line_spacing
-        last_y_line = int(self.y_min/self.line_spacing)*self.line_spacing
+    def draw_gridlines(self):
+
+        self.x_line_spacing = self.limit_lines(self.current_x_lines, self.x_line_spacing)
+        self.y_line_spacing = self.limit_lines(self.current_y_lines, self.y_line_spacing)
+        self.current_x_lines = round((self.x_max-self.x_min)/self.x_line_spacing)
+        self.current_y_lines = round((self.y_max-self.y_min)/self.y_line_spacing)
+        last_x_line = int(self.x_min/self.x_line_spacing)*self.x_line_spacing
+        last_y_line = int(self.y_min/self.y_line_spacing)*self.y_line_spacing
 
         for i in range(self.current_y_lines + 2):
-            graph_y = last_y_line + i*self.line_spacing
+            graph_y = last_y_line + i*self.y_line_spacing
             y_point = self.graph_to_screen_y(graph_y)
             if not self.is_radians:
                 y_numbers = degrees(graph_y)
@@ -98,12 +106,12 @@ class Graph(GUIObject):
                 self.y_lines_offset = False
 
             if not (self.x_lines_offset and graph_y == 0):
-                rendered_text = self.number_font.render(str(round(y_numbers, 3)), True, pygame.Color('black'))
+                rendered_text = self.small_main_font.render(str(round(y_numbers, 3)), True, pygame.Color('black'))
                 self.blit(rendered_text, (y_text_pos, y_point))
             pygame.draw.line(self, pygame.Color('grey'), (0, y_point), (self.size[0], y_point))
 
         for i in range(self.current_x_lines + 1):
-            graph_x = last_x_line + i*self.line_spacing
+            graph_x = last_x_line + i*self.x_line_spacing
             x_point = self.graph_to_screen_x(graph_x)
             if not self.is_radians:
                 x_numbers = degrees(graph_x)
@@ -122,8 +130,18 @@ class Graph(GUIObject):
                 self.x_lines_offset = False
 
             if not (self.y_lines_offset and graph_x == 0):
-                rendered_text = self.number_font.render(str(round(x_numbers, 3)), True, pygame.Color('black'))
-                self.blit(rendered_text, (x_point, x_text_pos))
+                # rendered_text = self.small_main_font.render(value, True, pygame.Color('black'))
+                if x_numbers != 0:
+                    coefficient = Fraction(x_numbers/float(pi))
+                    if coefficient.denominator != 1:
+                        rendered_text = self.small_main_font.render('%s|%s\u03C0' % (coefficient.numerator, coefficient.denominator), True, pygame.Color('black'))
+                    else:
+                        rendered_text = self.small_main_font.render('%s\u03C0' % coefficient.numerator, True, pygame.Color('black'))
+                    self.blit(rendered_text, (x_point, x_text_pos))
+
+                else:
+                    pass
+                    # self.blit('0.0', (x_point, x_text_pos))
             pygame.draw.line(self, pygame.Color('grey'), (x_point, 0), (x_point, self.size[1]))
 
     def update(self):
