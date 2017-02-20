@@ -16,8 +16,6 @@ class Graph(GUIObject):
 
         self.size = size
 
-        self.is_radians = True
-
         pie = float(pi)
         ratio = self.size[1]/self.size[0]
         self.x_min = -2*pie
@@ -25,11 +23,12 @@ class Graph(GUIObject):
         self.y_min = -ratio*2*pie
         self.y_max = ratio*2*pie
 
-        self.x_line_spacing = pie
+        self.is_radians = True
+
+        self.x_line_spacing = 8*pie
         self.y_line_spacing = 1
         self.current_x_lines = None
         self.current_y_lines = None
-
         self.x_lines_offset = False
         self.y_lines_offset = False
 
@@ -79,9 +78,9 @@ class Graph(GUIObject):
 
     def draw_gridlines(self):
 
-        last_y_line = int(self.y_min/self.y_line_spacing)*self.y_line_spacing
         self.current_y_lines = round((self.y_max-self.y_min)/self.y_line_spacing)
         self.y_line_spacing = self.limit_lines(self.current_y_lines, self.y_line_spacing)
+        last_y_line = int(self.y_min/self.y_line_spacing)*self.y_line_spacing
 
         for i in range(self.current_y_lines + 2):
             graph_y = last_y_line + i*self.y_line_spacing
@@ -90,7 +89,7 @@ class Graph(GUIObject):
 
             origin_x = self.graph_to_screen_x(0)
             text_size = self.small_main_font.size(str(y_numbers) + '0')[0] + 5
-            if origin_x < 0:
+            if origin_x < 3:
                 y_text_pos = 3
                 self.y_lines_offset = True
             elif origin_x > self.size[0]-text_size:
@@ -105,11 +104,11 @@ class Graph(GUIObject):
                 self.blit(rendered_text, (y_text_pos, y_point))
             pygame.draw.line(self, pygame.Color('grey'), (0, y_point), (self.size[0], y_point))
 
-        last_x_line = int(self.x_min/self.x_line_spacing)*self.x_line_spacing
         self.current_x_lines = round((self.x_max-self.x_min)/self.x_line_spacing)
         self.x_line_spacing = self.limit_lines(self.current_x_lines, self.x_line_spacing)
+        last_x_line = int(self.x_min/self.x_line_spacing)*self.x_line_spacing
 
-        for i in range(self.current_x_lines + 1):
+        for i in range(-1, self.current_x_lines + 1):
             graph_x = last_x_line + i*self.x_line_spacing
             x_point = self.graph_to_screen_x(graph_x)
             if not self.is_radians:
@@ -146,10 +145,9 @@ class Graph(GUIObject):
     def update(self):
 
         self.fill(pygame.Color('#ebebeb'))
-        self.draw_gridlines()
 
         x_range = abs(self.x_max-self.x_min)
-        y_range = abs(self.x_max-self.x_min)
+        y_range = abs(self.y_max-self.y_min)
         x_increment = x_range/self.size[0]
         y_increment = y_range/self.size[1]
 
@@ -174,7 +172,8 @@ class Graph(GUIObject):
             self.y_min *= 1.1
             self.y_max *= 1.1
 
-        origin = (self.graph_to_screen_x(0), self.graph_to_screen_y(0))
-        pygame.draw.circle(self, pygame.Color('blue'), origin, 5)
-
+        self.draw_gridlines()
         self.draw_function(sin(self.x))
+        origin = (self.graph_to_screen_x(0), self.graph_to_screen_y(0))
+        if (-20 < origin[0] < self.size[0]+20) and (-20 < origin[1] < self.size[1]+20):
+            pygame.draw.circle(self, pygame.Color('blue'), origin, 5)
