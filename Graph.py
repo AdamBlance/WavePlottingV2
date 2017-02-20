@@ -130,18 +130,17 @@ class Graph(GUIObject):
 
             # TODO: Scientific notation
 
+            unit_string = '0.0'
             if not (self.y_lines_offset and graph_x == 0):
                 if x_numbers != 0:
-                    coefficient = Fraction(round(x_numbers/float(pi), 8))
-                    if coefficient.denominator != 1:
-                        rendered_text = self.small_main_font.render('%s|%s\u03C0' % (coefficient.numerator, coefficient.denominator), True, pygame.Color('black'))
+                    if self.is_radians:
+                        coefficient = Fraction(round(x_numbers/float(pi), 8))
+                        unit_string = ('%s|%s\u03C0' % (coefficient.numerator, coefficient.denominator)).replace('|1', '')
                     else:
-                        rendered_text = self.small_main_font.render('%s\u03C0' % coefficient.numerator, True, pygame.Color('black'))
-                    self.blit(rendered_text, (x_point, x_text_pos))
+                        unit_string = str(x_numbers)
 
-                else:
-                    pass
-                    # self.blit('0.0', (x_point, x_text_pos))
+                rendered_text = self.small_main_font.render(unit_string, True, pygame.Color('black'))
+                self.blit(rendered_text, (x_point, x_text_pos))
             pygame.draw.line(self, pygame.Color('grey'), (x_point, 0), (x_point, self.size[1]))
 
     def update(self):
