@@ -160,6 +160,8 @@ class Graph(GUIObject):
             self.y_min += mouse_y
             self.y_max += mouse_y
 
+        # TODO: Fix zooming so it doesn't zoom to centre
+
         if self.event_manager.scrolled_up or K_UP in self.event_manager.keys_pressed:
             self.x_min *= 0.9
             self.x_max *= 0.9
