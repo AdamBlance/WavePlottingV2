@@ -17,7 +17,6 @@ class TextEntry(GUIObject):
     parsing_flags = standard_transformations + (implicit_multiplication_application,
                                                 function_exponentiation,
                                                 convert_xor)
-
     ascii_dict = {
         '=': '+',
         '1': '!',
@@ -36,7 +35,9 @@ class TextEntry(GUIObject):
 
     def __init__(self, event_manager, pos, colour, gui_object_blitted_to=None):
 
-        super().__init__(pos, (1000, 100)),
+        super().__init__(pos, (1000, 100))
+
+        self.char_dict = {'sum': self.big_main_font.render('\u2211')}
 
         self.colour = colour
         self.text = ''
@@ -78,11 +79,3 @@ class TextEntry(GUIObject):
 
         self.parsed_function = self.parse(self.text)
 
-        if self.parsed_function is not None:
-            buffer = BytesIO()
-            latex_function = '$' + latex(self.parsed_function) + '$'
-            math_to_image(latex_function, buffer, dpi=150, format='png')
-            buffer.seek(0)
-            self.function_surface = pygame.image.load(buffer)
-            buffer.close()
-            self.blit(self.function_surface, (0, 0))

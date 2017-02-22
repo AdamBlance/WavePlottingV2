@@ -160,8 +160,6 @@ class Graph(GUIObject):
             self.y_min += mouse_y
             self.y_max += mouse_y
 
-        # TODO: Fix zooming so it doesn't zoom to centre
-
         mouse_pos = pygame.mouse.get_pos()
         graph_pos = (self.screen_to_graph_x(mouse_pos[0]-10), self.screen_to_graph_y(mouse_pos[1]))
 
