@@ -88,7 +88,7 @@ class Graph(GUIObject):
             y_numbers = graph_y
 
             origin_x = self.graph_to_screen_x(0)
-            text_size = self.small_main_font.size(str(y_numbers) + '0')[0] + 5
+            text_size = self.small_main_font.size(str(round(y_numbers, 3)) + '0')[0] + 5
             if origin_x < 3:
                 y_text_pos = 3
                 self.y_lines_offset = True
@@ -162,18 +162,21 @@ class Graph(GUIObject):
 
         # TODO: Fix zooming so it doesn't zoom to centre
 
+        mouse_pos = pygame.mouse.get_pos()
+        graph_pos = (self.screen_to_graph_x(mouse_pos[0]-10), self.screen_to_graph_y(mouse_pos[1]))
+
         if self.event_manager.scrolled_up or K_UP in self.event_manager.keys_pressed:
-            self.x_min *= 0.9
-            self.x_max *= 0.9
-            self.y_min *= 0.9
-            self.y_max *= 0.9
+            self.x_min = (self.x_min - graph_pos[0]) * 0.9 + graph_pos[0]
+            self.x_max = (self.x_max - graph_pos[0]) * 0.9 + graph_pos[0]
+            self.y_min = (self.y_min - graph_pos[1]) * 0.9 + graph_pos[1]
+            self.y_max = (self.y_max - graph_pos[1]) * 0.9 + graph_pos[1]
 
         elif self.event_manager.scrolled_down or K_DOWN in self.event_manager.keys_pressed:
-            self.x_min *= 1.1
-            self.x_max *= 1.1
-            self.y_min *= 1.1
-            self.y_max *= 1.1
-
+            self.x_min = (self.x_min - graph_pos[0]) * 1.1 + graph_pos[0]
+            self.x_max = (self.x_max - graph_pos[0]) * 1.1 + graph_pos[0]
+            self.y_min = (self.y_min - graph_pos[1]) * 1.1 + graph_pos[1]
+            self.y_max = (self.y_max - graph_pos[1]) * 1.1 + graph_pos[1]
+            
         self.draw_gridlines()
         self.draw_function(sin(self.x))
         origin = (self.graph_to_screen_x(0), self.graph_to_screen_y(0))
