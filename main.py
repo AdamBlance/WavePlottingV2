@@ -1,10 +1,13 @@
 import pygame
+import pygame.freetype
+
+pygame.freetype.init()
 
 from Sidebar import Sidebar
 from ToggleButton import ToggleButton
 from EventManager import EventManager
-from FunctionBox import FunctionBox
 from Graph import Graph
+from TextContainer import TextContainer
 
 from sympy import *
 x = symbols('x')
@@ -16,28 +19,40 @@ main_surface = pygame.display.set_mode((screen_width, screen_height))
 event_manager = EventManager()
 
 my_sidebar = Sidebar((300, screen_height), pygame.Color('#30556c'), pygame.Color('#7c7a7a'))
-my_function_box = FunctionBox(event_manager, (0, 100), (300, 75), my_sidebar)
 my_toggle_button = ToggleButton(event_manager, (95, 25), [screen_width - 220, 30], 'degrees', 'radians')
 my_graph = Graph(event_manager, (10, 0), (screen_width, screen_height))
 
-clock = pygame.time.Clock()
+my_text_container = TextContainer(event_manager, (400, 250), pygame.Color('green'))
+
 while not event_manager.has_quit:
 
-    clock.tick(60)
+
+
+
+
+    event_manager.clock.tick(60)
     event_manager.update()
 
     if my_toggle_button.was_clicked:
         my_graph.toggle_degrees()
 
-    my_function_box.update()
     my_toggle_button.update()
     my_sidebar.update()
     my_graph.update()
 
+    my_text_container.update()
+
     main_surface.blit(my_graph, my_graph.pos)
     main_surface.blit(my_toggle_button, my_toggle_button.pos)
     main_surface.blit(my_sidebar, my_sidebar.pos)
-    my_sidebar.blit(my_function_box, my_function_box.pos)
+
+    main_surface.blit(my_text_container, my_text_container.pos)
+
+    test = pygame.freetype.Font('DejaVuSans.ttf', 25)
+    test.size = (10, 100)
+
+    test.render_to(main_surface, (200, 200), 'hello', fgcolor=pygame.Color('green'))
+
     pygame.display.update()
 
 pygame.quit()

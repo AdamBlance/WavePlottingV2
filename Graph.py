@@ -8,6 +8,7 @@ from fractions import Fraction
 
 class Graph(GUIObject):
     function_resolution = 1  # int > 0
+    graph_font = pygame.font.Font('DejaVuSans.ttf', 12)
 
     def __init__(self, event_manager, pos, size):
         super().__init__(pos, size)
@@ -88,7 +89,7 @@ class Graph(GUIObject):
             y_numbers = graph_y
 
             origin_x = self.graph_to_screen_x(0)
-            text_size = self.small_main_font.size(str(round(y_numbers, 3)) + '0')[0] + 5
+            text_size = self.graph_font.size(str(round(y_numbers, 3)) + '0')[0] + 5
             if origin_x < 3:
                 y_text_pos = 3
                 self.y_lines_offset = True
@@ -100,7 +101,7 @@ class Graph(GUIObject):
                 self.y_lines_offset = False
 
             if not (self.x_lines_offset and graph_y == 0):
-                rendered_text = self.small_main_font.render(str(round(y_numbers, 3)), True, pygame.Color('black'))
+                rendered_text = self.graph_font.render(str(round(y_numbers, 3)), True, pygame.Color('black'))
                 self.blit(rendered_text, (y_text_pos, y_point))
             pygame.draw.line(self, pygame.Color('grey'), (0, y_point), (self.size[0], y_point))
 
@@ -128,6 +129,7 @@ class Graph(GUIObject):
                 self.x_lines_offset = False
 
             # TODO: Scientific notation
+            # TODO: Fix the rounding thing
 
             unit_string = '0.0'
             if not (self.y_lines_offset and graph_x == 0):
@@ -138,7 +140,7 @@ class Graph(GUIObject):
                     else:
                         unit_string = str(x_numbers)
 
-                rendered_text = self.small_main_font.render(unit_string, True, pygame.Color('black'))
+                rendered_text = self.graph_font.render(unit_string, True, pygame.Color('black'))
                 self.blit(rendered_text, (x_point, x_text_pos))
             pygame.draw.line(self, pygame.Color('grey'), (x_point, 0), (x_point, self.size[1]))
 

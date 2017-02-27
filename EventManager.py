@@ -13,13 +13,28 @@ class EventManager:
         self.rmb_held = False
         self.scrolled_up = False
         self.scrolled_down = False
-
         self.shift_held = False
-
         self.keys_pressed = []
 
-        self.screen_focused = True
+        self.clock = pygame.time.Clock()
+
         self.has_quit = False
+
+        self.ascii_dict = {
+            '=': '+',
+            '1': '!',
+            '2': '2',
+            '3': '3',
+            '4': '4',
+            '5': '%',
+            '6': '^',
+            '7': '7',
+            '8': '*',
+            '9': '(',
+            '0': ')',
+            ',': '<',
+            '.': '>',
+            ' ': ' '}
 
     def reset_states(self):
         self.lmb_down = False
@@ -29,6 +44,22 @@ class EventManager:
         self.scrolled_up = False
         self.scrolled_down = False
         self.keys_pressed = []
+
+    def entered_char(self):
+
+        for char in self.keys_pressed:
+            string = chr(char)
+
+            if (string.isalpha() or string in self.ascii_dict) and char < 128:
+                if self.shift_held:
+                    if string in self.ascii_dict:
+                        return self.ascii_dict[string]
+                    else:
+                        return chr(char-32)
+                else:
+                    return string
+            elif char == 8:
+                return 'backspace'
 
     def update(self):
 
