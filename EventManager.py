@@ -17,6 +17,7 @@ class EventManager:
         self.keys_pressed = []
 
         self.clock = pygame.time.Clock()
+        self.total_ticks = 0
 
         self.has_quit = False
 
@@ -45,23 +46,26 @@ class EventManager:
         self.scrolled_down = False
         self.keys_pressed = []
 
-    def entered_char(self):
+    def entered_chars(self):
 
+        chars = []
         for char in self.keys_pressed:
             string = chr(char)
-
             if (string.isalpha() or string in self.ascii_dict) and char < 128:
                 if self.shift_held:
                     if string in self.ascii_dict:
-                        return self.ascii_dict[string]
+                        chars.append(self.ascii_dict[string])
                     else:
-                        return chr(char-32)
+                        chars.append(chr(char-32))
                 else:
-                    return string
+                    chars.append(string)
             elif char == 8:
-                return 'backspace'
+                chars.append('backspace')
+        return chars
 
     def update(self):
+
+        self.total_ticks += 1
 
         self.reset_states()
 

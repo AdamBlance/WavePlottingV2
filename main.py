@@ -1,8 +1,6 @@
 import pygame
 import pygame.freetype
 
-pygame.freetype.init()
-
 from Sidebar import Sidebar
 from ToggleButton import ToggleButton
 from EventManager import EventManager
@@ -11,6 +9,8 @@ from TextContainer import TextContainer
 
 from sympy import *
 x = symbols('x')
+
+pygame.freetype.init()
 
 screen_width = 1280
 screen_height = 720
@@ -26,11 +26,7 @@ my_text_container = TextContainer(event_manager, (400, 250), pygame.Color('green
 
 while not event_manager.has_quit:
 
-
-
-
-
-    event_manager.clock.tick(60)
+    event_manager.clock.tick(10)
     event_manager.update()
 
     if my_toggle_button.was_clicked:

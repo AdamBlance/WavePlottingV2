@@ -1,1 +1,2 @@
-class SpecialCharacter
+class SpecialCharacter:
+    pass
