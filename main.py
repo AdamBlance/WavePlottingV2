@@ -26,7 +26,7 @@ my_text_container = TextContainer(event_manager, (400, 250), pygame.Color('green
 
 while not event_manager.has_quit:
 
-    event_manager.clock.tick(10)
+    event_manager.clock.tick(60)
     event_manager.update()
 
     if my_toggle_button.was_clicked:

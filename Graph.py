@@ -165,13 +165,13 @@ class Graph(GUIObject):
         mouse_pos = pygame.mouse.get_pos()
         graph_pos = (self.screen_to_graph_x(mouse_pos[0]-10), self.screen_to_graph_y(mouse_pos[1]))
 
-        if self.event_manager.scrolled_up or K_UP in self.event_manager.keys_pressed:
+        if self.event_manager.scrolled_up or K_UP == self.event_manager.key_pressed:
             self.x_min = (self.x_min - graph_pos[0]) * 0.9 + graph_pos[0]
             self.x_max = (self.x_max - graph_pos[0]) * 0.9 + graph_pos[0]
             self.y_min = (self.y_min - graph_pos[1]) * 0.9 + graph_pos[1]
             self.y_max = (self.y_max - graph_pos[1]) * 0.9 + graph_pos[1]
 
-        elif self.event_manager.scrolled_down or K_DOWN in self.event_manager.keys_pressed:
+        elif self.event_manager.scrolled_down or K_DOWN == self.event_manager.key_pressed:
             self.x_min = (self.x_min - graph_pos[0]) * 1.1 + graph_pos[0]
             self.x_max = (self.x_max - graph_pos[0]) * 1.1 + graph_pos[0]
             self.y_min = (self.y_min - graph_pos[1]) * 1.1 + graph_pos[1]

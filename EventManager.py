@@ -14,8 +14,7 @@ class EventManager:
         self.scrolled_up = False
         self.scrolled_down = False
         self.shift_held = False
-        self.keys_pressed = []
-
+        self.key_pressed = None
         self.clock = pygame.time.Clock()
         self.total_ticks = 0
 
@@ -27,9 +26,11 @@ class EventManager:
             '2': '2',
             '3': '3',
             '4': '4',
-            '5': '%',
-            '6': '^',
-            '7': '7',
+            # '5': '%',
+            '5': '\u2588',
+            '6': '\u262D',
+            # '7': '7',
+            '7': '|',
             '8': '*',
             '9': '(',
             '0': ')',
@@ -44,27 +45,24 @@ class EventManager:
         self.rmb_up = False
         self.scrolled_up = False
         self.scrolled_down = False
-        self.keys_pressed = []
+        self.key_pressed = None
 
     def entered_chars(self):
-
-        chars = []
-        for char in self.keys_pressed:
+        if self.key_pressed is not None:
+            char = self.key_pressed
             string = chr(char)
             if (string.isalpha() or string in self.ascii_dict) and char < 128:
                 if self.shift_held:
                     if string in self.ascii_dict:
-                        chars.append(self.ascii_dict[string])
+                        return self.ascii_dict[string]
                     else:
-                        chars.append(chr(char-32))
+                        return chr(char-32)
                 else:
-                    chars.append(string)
+                    return string
             elif char == 8:
-                chars.append('backspace')
-        return chars
+                return 'backspace'
 
     def update(self):
-
         self.total_ticks += 1
 
         self.reset_states()
@@ -75,7 +73,7 @@ class EventManager:
                 self.has_quit = True
 
             elif event.type == KEYDOWN:
-                self.keys_pressed.append(event.key)
+                self.key_pressed = event.key
 
             elif event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:

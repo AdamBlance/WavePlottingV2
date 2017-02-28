@@ -16,6 +16,8 @@ class TextContainer(GUIObject):
                                                 function_exponentiation,
                                                 convert_xor)
 
+    maths_font = pygame.freetype.Font('DejaVuSans.ttf', 15)
+
     colour = pygame.Color('white')
 
     def __init__(self, event_manager, pos, gui_object_blitted_to=None):
@@ -38,21 +40,23 @@ class TextContainer(GUIObject):
         self.fill(pygame.Color('black'))
 
         pressed = self.event_manager.entered_chars()
-        for key in pressed:
-            if key is not None:
-                if key != 'backspace':
-                    self.all_chars.append(key)
-                else:
-                    self.all_chars = self.all_chars[:-1]
+        if pressed is not None:
+            if pressed != 'backspace':
+                self.all_chars.append(pressed)
+            else:
+                self.all_chars = self.all_chars[:-1]
 
         joined = ''.join(self.all_chars)
 
-        text_height = self.freetype_main_font.get_rect('\u2588')[1]
+        text_height = self.maths_font.get_rect('\u2588')[1]
         halfway = self.size[1]/2 - text_height/2
 
-        if len(self.all_chars) != 0:
-            self.freetype_main_font.render_to(self, (0, halfway), joined, fgcolor=pygame.Color('white'), bgcolor=pygame.Color('blue'))
+        # ONLY ONE CHARACTER AT A TIME
 
+        if len(self.all_chars) != 0:
+            rendered = self.maths_font.render('|' + joined, fgcolor=pygame.Color('white'), bgcolor=pygame.Color('blue'))[0]
+            blit_height = text_height - rendered.get_rect().height
+            self.blit(rendered, (0, halfway + blit_height))
         self.pointer = self.main_font.size(joined)[0]
         if self.event_manager.total_ticks % 20 == 0:
             if self.pointer_visible:
@@ -61,4 +65,4 @@ class TextContainer(GUIObject):
                 self.pointer_visible = True
 
         if self.pointer_visible:
-            pygame.draw.line(self, pygame.Color('white'), (self.pointer, halfway), (self.pointer, halfway + 15))
+            pygame.draw.line(self, pygame.Color('white'), (self.pointer+3, halfway), (self.pointer, halfway + 15))
