@@ -61,6 +61,8 @@ class EventManager:
                     return string
             elif char == 8:
                 return 'backspace'
+            elif char == 127:
+                return 'delete'
 
     def update(self):
         self.total_ticks += 1

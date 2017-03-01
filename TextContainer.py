@@ -41,7 +41,7 @@ class TextContainer(GUIObject):
 
         self.fill(pygame.Color('black'))
 
-        if not (0 < self.pointer_index < len(self.all_chars)):
+        if 0 <= self.pointer_index <= len(self.all_chars):
             if self.event_manager.key_pressed == K_LEFT:
                 self.pointer_index -= 1
             if self.event_manager.key_pressed == K_RIGHT:
@@ -49,12 +49,19 @@ class TextContainer(GUIObject):
 
         pressed = self.event_manager.entered_chars()
         if pressed is not None:
-            if pressed != 'backspace':
-                self.all_chars.insert(self.pointer, pressed)
+            if pressed == 'backspace':
+                if self.pointer_index != 0:
+                    self.pointer_index -= 1
+                    self.all_chars.pop(self.pointer_index)
+            elif pressed == 'delete':
+                if self.pointer_index != len(self.all_chars):
+                    self.all_chars.pop(self.pointer_index)
             else:
-                self.all_chars = self.all_chars[:-1]
+                self.all_chars.insert(self.pointer_index, pressed)
+                self.pointer_index += 1
 
         joined = ''.join(self.all_chars)
+        pointer_join = ''.join(self.all_chars[:self.pointer_index])
 
         half_entry = self.size[1]/2
         text_height = self.maths_font.get_rect('\u2588')[1]
@@ -63,7 +70,7 @@ class TextContainer(GUIObject):
         if len(self.all_chars) != 0:
             rendered = self.maths_font.render('|' + joined, fgcolor=pygame.Color('white'))[0]
             self.blit(rendered, (-1, half))
-        self.pointer = self.main_font.size(joined)[0]
+        self.pointer = self.main_font.size(pointer_join)[0]
         if self.event_manager.total_ticks % 20 == 0:
             if self.pointer_visible:
                 self.pointer_visible = False
