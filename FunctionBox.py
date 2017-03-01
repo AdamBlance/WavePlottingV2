@@ -14,7 +14,6 @@ class FunctionBox(GUIObject):
         self.blitted_to = gui_object_blitted_to
         self.fill((255, 255, 255))
 
-        # self.text_entry = TextEntry(event_manager, (0, 0), (255, 255, 255), gui_object_blitted_to=self)
         self.delete_button = Button(event_manager, (self.size[0] - 50, self.size[1] - 50), (200, 0, 0), 'X', print,
                                     'pressed_delete', gui_object_blitted_to=self)
 
