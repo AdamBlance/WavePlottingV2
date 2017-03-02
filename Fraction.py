@@ -1,6 +1,18 @@
 import pygame
+import pygame.freetype
+
+class Fraction(pygame.Surface):
+
+    fraction_font = pygame.freetype.Font('media/DejaVuSans.ttf')
+
+    def __init__(self, top='\u25af', bottom='\u25af'):
+        self.numerator = top
+        self.denominator = bottom
+
+        super().__init__()
+
+        self.render()
 
 
-class Fraction:
-    def __init__(self, top=None, bottom=None):
-        pass
+    def render(self):
+        self.

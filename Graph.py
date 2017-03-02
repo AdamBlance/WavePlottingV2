@@ -8,7 +8,7 @@ from fractions import Fraction
 
 class Graph(GUIObject):
     function_resolution = 1  # int > 0
-    graph_font = pygame.font.Font('DejaVuSans.ttf', 12)
+    graph_font = pygame.font.Font('media/DejaVuSans.ttf', 12)
 
     def __init__(self, event_manager, pos, size):
         super().__init__(pos, size)

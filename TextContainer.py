@@ -11,14 +11,34 @@ from sympy.parsing.sympy_parser import \
 pygame.font.init()
 
 
+# FIELDS
+
+# NNNNNNNN        NNNNNNNNEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEDDDDDDDDDDDDD
+# N:::::::N       N::::::NE::::::::::::::::::::EE::::::::::::::::::::EE::::::::::::::::::::ED::::::::::::DDD
+# N::::::::N      N::::::NE::::::::::::::::::::EE::::::::::::::::::::EE::::::::::::::::::::ED:::::::::::::::DD
+# N:::::::::N     N::::::NEE::::::EEEEEEEEE::::EEE::::::EEEEEEEEE::::EEE::::::EEEEEEEEE::::EDDD:::::DDDDD:::::D
+# N::::::::::N    N::::::N  E:::::E       EEEEEE  E:::::E       EEEEEE  E:::::E       EEEEEE  D:::::D    D:::::D
+# N:::::::::::N   N::::::N  E:::::E               E:::::E               E:::::E               D:::::D     D:::::D
+# N:::::::N::::N  N::::::N  E::::::EEEEEEEEEE     E::::::EEEEEEEEEE     E::::::EEEEEEEEEE     D:::::D     D:::::D
+# N::::::N N::::N N::::::N  E:::::::::::::::E     E:::::::::::::::E     E:::::::::::::::E     D:::::D     D:::::D
+# N::::::N  N::::N:::::::N  E:::::::::::::::E     E:::::::::::::::E     E:::::::::::::::E     D:::::D     D:::::D
+# N::::::N   N:::::::::::N  E::::::EEEEEEEEEE     E::::::EEEEEEEEEE     E::::::EEEEEEEEEE     D:::::D     D:::::D
+# N::::::N    N::::::::::N  E:::::E               E:::::E               E:::::E               D:::::D     D:::::D
+# N::::::N     N:::::::::N  E:::::E       EEEEEE  E:::::E       EEEEEE  E:::::E       EEEEEE  D:::::D    D:::::D
+# N::::::N      N::::::::NEE::::::EEEEEEEE:::::EEE::::::EEEEEEEE:::::EEE::::::EEEEEEEE:::::EDDD:::::DDDDD:::::D
+# N::::::N       N:::::::NE::::::::::::::::::::EE::::::::::::::::::::EE::::::::::::::::::::ED:::::::::::::::DD
+# N::::::N        N::::::NE::::::::::::::::::::EE::::::::::::::::::::EE::::::::::::::::::::ED::::::::::::DDD
+# NNNNNNNN         NNNNNNNEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEDDDDDDDDDDDDD
+
+# TO SCALE WITH ENTERED TEXT
+
 class TextContainer(GUIObject):
     all_text_entries = []
     parsing_flags = standard_transformations + (implicit_multiplication_application,
                                                 function_exponentiation,
                                                 convert_xor)
 
-    maths_font = pygame.freetype.Font('DejaVuSans.ttf', 20)
-
+    maths_font = pygame.freetype.Font('media/DejaVuSans.ttf', 20)
     colour = pygame.Color('white')
 
     def __init__(self, event_manager, pos, gui_object_blitted_to=None):
@@ -74,7 +94,7 @@ class TextContainer(GUIObject):
         half = half_entry - text_height/2
 
         if len(self.all_chars) != 0:
-            rendered = self.maths_font.render('|' + joined, fgcolor=pygame.Color('white'))[0]
+            rendered = self.maths_font.render('|' + joined, fgcolor=self.colour)[0]
             self.blit(rendered, (-self.maths_font.get_rect('|').width, half))
         self.pointer_pos = self.maths_font.get_rect(pointer_join).width
 
@@ -85,4 +105,4 @@ class TextContainer(GUIObject):
                 self.pointer_visible = True
 
         if self.pointer_visible:
-            pygame.draw.line(self, pygame.Color('white'), (self.pointer_pos+3, half-2), (self.pointer_pos+3, half + text_height + 2))
+            pygame.draw.line(self, self.colour, (self.pointer_pos+3, half-2), (self.pointer_pos+3, half + text_height + 2))

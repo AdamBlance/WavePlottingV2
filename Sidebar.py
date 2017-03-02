@@ -5,7 +5,6 @@ pygame.font.init()
 
 
 class Sidebar(GUIObject):
-    sidebar_text = pygame.font.Font('DejaVuSans.ttf', 20)
 
     def __init__(self, size, main_colour, tab_colour):
 

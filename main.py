@@ -1,4 +1,3 @@
-import pygame
 import pygame.freetype
 
 from Sidebar import Sidebar
@@ -23,55 +22,6 @@ my_toggle_button = ToggleButton(event_manager, (95, 25), [screen_width - 220, 30
 my_graph = Graph(event_manager, (10, 0), (screen_width, screen_height))
 
 my_text_container = TextContainer(event_manager, (400, 250), pygame.Color('green'))
-
-text_selector = (
-'    XXXXXXX     ',
-'    X..X..X     ',
-'    XXX.XXX     ',
-'      X.X       ',
-'      X.X       ',
-'      X.X       ',
-'      X.X       ',
-'      X.X       ',
-'      X.X       ',
-'      X.X       ',
-'      X.X       ',
-'      X.X       ',
-'      X.X       ',
-'    XXX.XXX     ',
-'    X..X..X     ',
-'    XXXXXXX     '
-)
-
-normal_cursor = (
-'X                       ',
-'XX                      ',
-'X.X                     ',
-'X..X                    ',
-'X...X                   ',
-'X....X                  ',
-'X.....X                 ',
-'X......X                ',
-'X.......X               ',
-'X........X              ',
-'X.........X             ',
-'X..........X            ',
-'X...........X           ',
-'X............X          ',
-'X.............X         ',
-'X........XXXXXXX        ',
-'X........X              ',
-'X....X...X              ',
-'X...X X...X             ',
-'X..X  X...X             ',
-'X.X    X...X            ',
-'XX     X...X            ',
-'X       X..X            ',
-'        XXXX            '
-)
-
-compiled = pygame.cursors.compile(text_selector, black='X', white='.', xor='o')
-pygame.mouse.set_cursor((16, 16), (8, 8), compiled[0], compiled[1])
 
 while not event_manager.has_quit:
 

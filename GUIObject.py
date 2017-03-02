@@ -1,7 +1,11 @@
+from os.path import abspath
 import pygame
 import pygame.freetype
 pygame.font.init()
 pygame.freetype.init()
+
+
+# CONVERT ALL FONT TO FREETYPE
 
 
 class GUIObject(pygame.Surface):
@@ -9,7 +13,7 @@ class GUIObject(pygame.Surface):
 
     # should only update objects if they need updated as blitting every frame is slow
 
-    main_font = pygame.font.Font('DejaVuSans.ttf', 15)
+    main_font = pygame.font.Font('media/DejaVuSans.ttf', 15)
     font_colour = pygame.Color('#ebebeb')
 
     # todo: Add colour themes
