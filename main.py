@@ -24,6 +24,55 @@ my_graph = Graph(event_manager, (10, 0), (screen_width, screen_height))
 
 my_text_container = TextContainer(event_manager, (400, 250), pygame.Color('green'))
 
+text_selector = (
+'    XXXXXXX     ',
+'    X..X..X     ',
+'    XXX.XXX     ',
+'      X.X       ',
+'      X.X       ',
+'      X.X       ',
+'      X.X       ',
+'      X.X       ',
+'      X.X       ',
+'      X.X       ',
+'      X.X       ',
+'      X.X       ',
+'      X.X       ',
+'    XXX.XXX     ',
+'    X..X..X     ',
+'    XXXXXXX     '
+)
+
+normal_cursor = (
+'X                       ',
+'XX                      ',
+'X.X                     ',
+'X..X                    ',
+'X...X                   ',
+'X....X                  ',
+'X.....X                 ',
+'X......X                ',
+'X.......X               ',
+'X........X              ',
+'X.........X             ',
+'X..........X            ',
+'X...........X           ',
+'X............X          ',
+'X.............X         ',
+'X........XXXXXXX        ',
+'X........X              ',
+'X....X...X              ',
+'X...X X...X             ',
+'X..X  X...X             ',
+'X.X    X...X            ',
+'XX     X...X            ',
+'X       X..X            ',
+'        XXXX            '
+)
+
+compiled = pygame.cursors.compile(normal_cursor, black='X', white='.', xor='o')
+pygame.mouse.set_cursor((24, 24), (0, 0), compiled[0], compiled[1])
+
 while not event_manager.has_quit:
 
     event_manager.clock.tick(60)

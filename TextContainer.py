@@ -64,7 +64,7 @@ class TextContainer(GUIObject):
         pointer_join = ''.join(self.all_chars[:self.pointer_index])
 
         half_entry = self.size[1]/2
-        text_height = self.maths_font.get_rect('\u2588')[1]
+        text_height = self.maths_font.get_rect('|')[1]
         half = half_entry - text_height/2
 
         if len(self.all_chars) != 0:
@@ -78,4 +78,4 @@ class TextContainer(GUIObject):
                 self.pointer_visible = True
 
         if self.pointer_visible:
-            pygame.draw.line(self, pygame.Color('white'), (self.pointer+3, half), (self.pointer+3, half + text_height))
+            pygame.draw.line(self, pygame.Color('white'), (self.pointer+3, half-2), (self.pointer+3, half + text_height + 2))
