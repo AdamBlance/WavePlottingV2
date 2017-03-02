@@ -70,8 +70,8 @@ normal_cursor = (
 '        XXXX            '
 )
 
-compiled = pygame.cursors.compile(normal_cursor, black='X', white='.', xor='o')
-pygame.mouse.set_cursor((24, 24), (0, 0), compiled[0], compiled[1])
+compiled = pygame.cursors.compile(text_selector, black='X', white='.', xor='o')
+pygame.mouse.set_cursor((16, 16), (8, 8), compiled[0], compiled[1])
 
 while not event_manager.has_quit:
 
@@ -90,13 +90,7 @@ while not event_manager.has_quit:
     main_surface.blit(my_graph, my_graph.pos)
     main_surface.blit(my_toggle_button, my_toggle_button.pos)
     main_surface.blit(my_sidebar, my_sidebar.pos)
-
     main_surface.blit(my_text_container, my_text_container.pos)
-
-    test = pygame.freetype.Font('DejaVuSans.ttf', 25)
-    test.size = (10, 100)
-
-    test.render_to(main_surface, (200, 200), 'hello', fgcolor=pygame.Color('green'))
 
     pygame.display.update()
 
