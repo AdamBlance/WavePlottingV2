@@ -11,27 +11,6 @@ from sympy.parsing.sympy_parser import \
 pygame.font.init()
 
 
-# FIELDS
-
-# NNNNNNNN        NNNNNNNNEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEDDDDDDDDDDDDD
-# N:::::::N       N::::::NE::::::::::::::::::::EE::::::::::::::::::::EE::::::::::::::::::::ED::::::::::::DDD
-# N::::::::N      N::::::NE::::::::::::::::::::EE::::::::::::::::::::EE::::::::::::::::::::ED:::::::::::::::DD
-# N:::::::::N     N::::::NEE::::::EEEEEEEEE::::EEE::::::EEEEEEEEE::::EEE::::::EEEEEEEEE::::EDDD:::::DDDDD:::::D
-# N::::::::::N    N::::::N  E:::::E       EEEEEE  E:::::E       EEEEEE  E:::::E       EEEEEE  D:::::D    D:::::D
-# N:::::::::::N   N::::::N  E:::::E               E:::::E               E:::::E               D:::::D     D:::::D
-# N:::::::N::::N  N::::::N  E::::::EEEEEEEEEE     E::::::EEEEEEEEEE     E::::::EEEEEEEEEE     D:::::D     D:::::D
-# N::::::N N::::N N::::::N  E:::::::::::::::E     E:::::::::::::::E     E:::::::::::::::E     D:::::D     D:::::D
-# N::::::N  N::::N:::::::N  E:::::::::::::::E     E:::::::::::::::E     E:::::::::::::::E     D:::::D     D:::::D
-# N::::::N   N:::::::::::N  E::::::EEEEEEEEEE     E::::::EEEEEEEEEE     E::::::EEEEEEEEEE     D:::::D     D:::::D
-# N::::::N    N::::::::::N  E:::::E               E:::::E               E:::::E               D:::::D     D:::::D
-# N::::::N     N:::::::::N  E:::::E       EEEEEE  E:::::E       EEEEEE  E:::::E       EEEEEE  D:::::D    D:::::D
-# N::::::N      N::::::::NEE::::::EEEEEEEE:::::EEE::::::EEEEEEEE:::::EEE::::::EEEEEEEE:::::EDDD:::::DDDDD:::::D
-# N::::::N       N:::::::NE::::::::::::::::::::EE::::::::::::::::::::EE::::::::::::::::::::ED:::::::::::::::DD
-# N::::::N        N::::::NE::::::::::::::::::::EE::::::::::::::::::::EE::::::::::::::::::::ED::::::::::::DDD
-# NNNNNNNN         NNNNNNNEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEDDDDDDDDDDDDD
-
-# TO SCALE WITH ENTERED TEXT
-
 class TextContainer(GUIObject):
     all_text_entries = []
     parsing_flags = standard_transformations + (implicit_multiplication_application,
@@ -53,14 +32,21 @@ class TextContainer(GUIObject):
 
         self.pointer_visible = True
 
-    def make_new(self):
-        self.all_chars.append(TextContainer(self.event_manager, (self.pointer_pos, self.maths_font.height*0.3)))
+    def add_power(self):
+        new = TextContainer(self.event_manager, (self.pointer_pos, self.maths_font.height*0.3))
+        new.is_current = True
+        self.all_chars.append(new)
+        self.is_current = False
 
-    def join_chars(self):
+    def count_text(self):
+        pass
+
+    def join_chars(self, start, end):
         output = ''
-        for char in self.all_chars:
+        for char in self.all_chars[start:end]:
             if type(char) == str:
                 output += char
+        return output
 
     def update(self):
         self.fill(pygame.Color('black'))
@@ -86,7 +72,7 @@ class TextContainer(GUIObject):
                 self.all_chars.insert(self.pointer_index, pressed)
                 self.pointer_index += 1
 
-        joined = ''.join(self.all_chars)
+        joined = self.join_chars(0, len(self.all_chars))
         pointer_join = ''.join(self.all_chars[:self.pointer_index])
 
         half_entry = self.size[1]/2
