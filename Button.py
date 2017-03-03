@@ -6,8 +6,8 @@ pygame.font.init()
 class Button(GUIObject):
     all_buttons = []
 
-    highlighted = pygame.Color(150, 150, 150)
-    pressed = pygame.Color(75, 75, 75)
+    highlighted = pygame.Color((150, 150, 150))
+    pressed = pygame.Color((75, 75, 75))
 
     def __init__(self, event_manager, pos, colour, text, function, *args, size=None, gui_object_blitted_to=None):
 
