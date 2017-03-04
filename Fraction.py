@@ -10,24 +10,24 @@ class Fraction(SpecialCharacter):
     def __init__(self, event_manager, font_size, top=None, bottom=None):
 
         self.event_manager = event_manager
-        self.numerator = top
-        self.denominator = bottom
-        self.numerator_container = TextContainer(self.event_manager, font_size)
-        self.denominator_container = TextContainer(self.event_manager, font_size)
+        self.numerator = TextContainer(self.event_manager, font_size)
+        self.denominator = TextContainer(self.event_manager, font_size)
 
         bound_size = self.get_frac_size()
-        super().__init__(self.event_manager, bound_size, font_size)
+        super().__init__(bound_size, [self.numerator, self.denominator], [font_size]*2)
 
     def get_frac_size(self):
-        blank_size = self.get_blank_size()
-        if not self.numerator:
+        blank_size = self.numerator.blank_char
+        if not self.numerator.all_symbols:
             top = blank_size
         else:
-            top = self.numerator_container
-        if not self.denominator:
+            pass
+            # calculate size of textcontainer with special chars
+        if not self.denominator.all_symbols:
             bottom = blank_size
         else:
-            bottom = self.denominator_container
+            pass
+            # calculate size of textcontainer with special chars
 
         total_height = top.height + self.line_padding + bottom.height
         total_width = max(top.width, bottom.width) + self.line_padding
