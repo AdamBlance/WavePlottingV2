@@ -48,11 +48,14 @@ class TextContainer(pygame.Surface):
 
         self.all_symbols = []
 
+        self.divided_symbols = []
+
         self.pointer_pos = 0
         self.pointer_index = 0
         self.pointer_visible = True
 
         self.is_valid_func = True
+
 
     def backspace(self):
         if self.pointer_index != 0:
@@ -80,23 +83,38 @@ class TextContainer(pygame.Surface):
                 output.append(current_string)
                 output.append(symbol)
                 current_string = ''
-        return output
+        self.divided_symbols = output
 
     def find_symbol_rects(self):
-        self.symbol_rects.clear()
-        divided_symbols = self.divide_symbols()
-        if len(divided_symbols) == 0 and not self.is_master_container:
-            self.symbol_rects.append(self.font.get_rect(self.blank_char))
-        for x in divided_symbols:
+        output = []
+        output.clear()
+        if len(self.divided_symbols) == 0 and not self.is_master_container:
+            output.append(self.font.get_rect(self.blank_char))
+        for x in self.divided_symbols:
             if type(x) == str:
-                self.symbol_rects.append(self.font.get_rect(x))
+                output.append(self.font.get_rect(x))
             else:
-                self.symbol_rects.append(x.get_rect())
+                output.append(x.get_character_size())
+        self.symbol_rects = output
 
     def reinitialise_surface(self):
         width = sum([rect.width for rect in self.symbol_rects])
         height = max([rect.height for rect in self.symbol_rects])
         super().__init__((width, height))
+
+    def render_symbols(self):
+
+        self.find_symbol_rects()
+        self.reinitialise_surface()
+
+        width_sum = 0
+        for i in range(0, len(self.divided_symbols)):
+            if type(self.divided_symbols[i]) == str:
+                surface = self.font.render(self.divided_symbols[i])
+            else:
+                surface = self.divided_symbols[i].render()
+            self.blit(surface, (width_sum, 0))
+            width_sum += self.symbol_rects[i]
 
     def backtrack_from_pointer(self):
         operators = '+-*'
@@ -135,7 +153,7 @@ class TextContainer(pygame.Surface):
                 self.pointer_index += 1
 
         for symbol in self.all_symbols:
-            if type(symbol).__bases__[0] == SpecialCharacter:
+            if type(symbol).__bases__[0] == SpecialCharacter: # no need for this just put in else statement
                 pass
 
 

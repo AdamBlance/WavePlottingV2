@@ -1,3 +1,4 @@
+import pygame
 from SpecialCharacter import SpecialCharacter
 from TextContainer import TextContainer
 
@@ -13,11 +14,11 @@ class Fraction(SpecialCharacter):
         self.numerator = TextContainer(self.event_manager, font_size)
         self.denominator = TextContainer(self.event_manager, font_size)
 
-        bound_size = self.get_frac_size()
+        bound_size = self.get_character_size()
         super().__init__(bound_size, [self.numerator, self.denominator], [font_size]*2)
 
-    def get_frac_size(self):
-        blank_size = self.numerator.blank_char
+    def get_character_size(self):
+        blank_size = self.numerator.font.get_rect(self.numerator.blank_char)
         if not self.numerator.all_symbols:
             top = blank_size
         else:
@@ -31,5 +32,5 @@ class Fraction(SpecialCharacter):
 
         total_height = top.height + self.line_padding + bottom.height
         total_width = max(top.width, bottom.width) + self.line_padding
-        return total_width, total_height
+        return pygame.Rect((0, 0), (total_width, total_height))
 
