@@ -44,11 +44,15 @@ class TextContainer(pygame.Surface):
         self.event_manager = event_manager
         self.is_current = True
 
+        self.symbol_rects = []
+
         self.all_symbols = []
 
         self.pointer_pos = 0
         self.pointer_index = 0
         self.pointer_visible = True
+
+        self.is_valid_func = True
 
     def backspace(self):
         if self.pointer_index != 0:
@@ -63,18 +67,53 @@ class TextContainer(pygame.Surface):
         self.all_symbols.insert(self.pointer_index, symbol)
         # self.pointer_index += 1
 
-    def render_text(self):
+    def divide_symbols(self):
+        array = self.all_symbols
+        output = []
+        current_string = ''
+        for symbol in array:
+            if type(symbol) == str:
+                current_string += symbol
+                if array[-1] == symbol:
+                    output.append(current_string)
+            else:
+                output.append(current_string)
+                output.append(symbol)
+                current_string = ''
+        return output
 
-        pass
-        # must blit self.blank_char when TextContainer are blank (but only when part of SpecialCharacters)
+    def find_symbol_rects(self):
+        self.symbol_rects.clear()
+        divided_symbols = self.divide_symbols()
+        if len(divided_symbols) == 0 and not self.is_master_container:
+            self.symbol_rects.append(self.font.get_rect(self.blank_char))
+        for x in divided_symbols:
+            if type(x) == str:
+                self.symbol_rects.append(self.font.get_rect(x))
+            else:
+                self.symbol_rects.append(x.get_rect())
 
+    def reinitialise_surface(self):
+        width = sum([rect.width for rect in self.symbol_rects])
+        height = max([rect.height for rect in self.symbol_rects])
+        super().__init__((width, height))
 
-    # delimiters could be changed - spaces for the now
     def backtrack_from_pointer(self):
-        counter = self.pointer_index
-        while self.all_symbols[counter] != ' ':
-            counter -= 1
-        return self.all_symbols[counter:self.pointer_index+1]
+        operators = '+-*'
+        if self.all_symbols[-1] in operators + '=' + ' ':
+            return ''
+        equals_pos = len(self.all_symbols)-1 - self.all_symbols[::-1].index('=')
+        if equals_pos != -1:
+            end = 0
+        else:
+            end = equals_pos
+        for i in range(len(self.all_symbols)-1, end-1, -1):
+            if self.all_symbols[i] == ' ':
+                if self.all_symbols[i+1] in operators:
+                    return self.all_symbols[i+2:]
+                else:
+                    return self.all_symbols[i+1:]
+        return self.all_symbols[equals_pos+1:]
 
     def update(self):
 
@@ -95,9 +134,9 @@ class TextContainer(pygame.Surface):
             else:
                 self.pointer_index += 1
 
-
         for symbol in self.all_symbols:
             if type(symbol).__bases__[0] == SpecialCharacter:
+                pass
 
 
 
@@ -115,16 +154,10 @@ class TextContainer(pygame.Surface):
             elif pressed == 'delete':
                 self.delete()
             elif pressed == '/':
-
-                # need to fix pointer first
-
-                backtrack = self.backtrack_from_pointer()
-                self.all_symbols.append(Fraction(self.event_manager, self.font.height))
+                backtrack = list(self.backtrack_from_pointer())
+                self.all_symbols.append(Fraction(self.event_manager, self.font.height, backtrack))
             else:
                 self.add_symbol(pressed)
-
-        # REPLACE JOINS
-        # NEW FORMAT IS ['5x
 
         joined = ''.join(self.all_symbols)
         pointer_join = ''.join(self.all_symbols[:self.pointer_index])
