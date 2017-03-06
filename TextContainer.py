@@ -71,8 +71,7 @@ class TextContainer(pygame.Surface):
         for i in range(0, len(array)):
             if type(array[i]) == str:
                 current_string += array[i]
-                # if array[-1] == symbol:  # THIS IS INCORRECT FIX NOW
-                if i == len(array)-1:  # THIS IS INCORRECT FIX NOW
+                if i == len(array)-1:
                     output.append(current_string)
             else:
                 output.append(current_string)
@@ -132,7 +131,19 @@ class TextContainer(pygame.Surface):
 
     def update(self):
 
-        # if self.event_manager.key_pressed == K_LEFT:
+        if self.event_manager.key_pressed == K_RIGHT and self.is_current:
+            if self.pointer_index != len(self.all_symbols)-1:
+                if not self.is_master_container:
+                    pass
+                else:
+                    if type(self.all_symbols[self.pointer_index + 1]) != str:
+                        self.is_current = False
+                        self.all_symbols[self.pointer_index + 1].text_container_order = True
+                    self.pointer_index += 1
+
+        # need to have pointer leave and enter TextContainers in order
+
+        # if self.event_manager.key_pressed == K_LEFT and self.is_current:
         #     if self.pointer_index == 0:
         #         if not self.is_master_container:
         #             self.is_current = False

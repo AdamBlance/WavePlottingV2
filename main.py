@@ -1,8 +1,7 @@
 from EventManager import EventManager
-from Fraction import Fraction
-from Graph import Graph
-import pygame
+from TextContainer import TextContainer
 import pygame.freetype
+
 
 screen_width = 1280
 screen_height = 720
@@ -10,8 +9,7 @@ main_surface = pygame.display.set_mode((screen_width, screen_height))
 
 event_manager = EventManager()
 
-test_fraction = Fraction(event_manager, 30, ['3'], ['4'])
-my_fraction = Fraction(event_manager, 40, ['2', '2', test_fraction], ['7'])
+# text_container = TextContainer
 
 while not event_manager.has_quit:
 
@@ -19,8 +17,6 @@ while not event_manager.has_quit:
     event_manager.update()
 
     main_surface.fill(pygame.Color('green'))
-
-    main_surface.blit(my_fraction, (200, 200))
 
     pygame.display.update()
 
