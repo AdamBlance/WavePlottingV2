@@ -82,7 +82,6 @@ class TextContainer(pygame.Surface):
 
     def find_symbol_rects(self):
         output = []
-        output.clear()
         if len(self.divided_symbols) == 0 and not self.is_master_container:
             output.append(self.font.get_rect(self.blank_char))
         for x in self.divided_symbols:
@@ -109,7 +108,7 @@ class TextContainer(pygame.Surface):
         for i in range(0, len(self.divided_symbols)):
             if type(self.divided_symbols[i]) == str:
                 surface = self.font.render(self.divided_symbols[i], fgcolor=pygame.Color('white'))[0]
-                self.blit(surface, (width_sum, 0))
+                self.blit(surface, (width_sum, total_size.height/2 - symbol_rects[i].height/2))
             else:
                 self.blit(self.divided_symbols[i], (width_sum, 0))
             width_sum += symbol_rects[i].width

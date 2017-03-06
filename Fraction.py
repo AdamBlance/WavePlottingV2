@@ -4,6 +4,7 @@ from TextContainer import TextContainer
 
 pygame.init()
 
+
 class Fraction(SpecialCharacter):
 
     line_padding = 7  # should always be odd if line is 1px thick
