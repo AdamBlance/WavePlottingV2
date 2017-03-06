@@ -18,9 +18,7 @@ class SpecialCharacter(pygame.Surface):
     def __init__(self, size, text_container_order):
 
         self.text_container_order = text_container_order
-        self.reinit_surface(size)
 
     # @staticmethod
     def reinit_surface(self, size):
-        print(size)
         super().__init__(size)

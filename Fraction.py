@@ -2,6 +2,7 @@ import pygame
 from SpecialCharacter import SpecialCharacter
 from TextContainer import TextContainer
 
+pygame.init()
 
 class Fraction(SpecialCharacter):
 
@@ -20,10 +21,12 @@ class Fraction(SpecialCharacter):
             self.denominator.set_symbols_to(bottom)
 
         self.render_symbol()
+
         rect = self.get_rect()
         super().__init__((rect.width, rect.height), [self.numerator, self.denominator])
 
     def render_symbol(self):
+
         self.numerator.render_symbols()
         self.denominator.render_symbols()
 

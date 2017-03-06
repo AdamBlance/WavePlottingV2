@@ -34,7 +34,6 @@ class TextContainer(pygame.Surface):
         self.is_current = True
 
         self.all_symbols = []
-        self.symbol_rects = []
         self.divided_symbols = []
 
         self.pointer_pos = 0
@@ -43,9 +42,7 @@ class TextContainer(pygame.Surface):
 
         if size is None:
             self.is_master_container = False
-            self.render_symbols()
-            rect = self.get_rect()
-            super().__init__((rect.width, rect.height))
+            super().__init__((0, 0))
         else:
             self.is_master_container = True
             super().__init__(size)
@@ -71,14 +68,15 @@ class TextContainer(pygame.Surface):
         array = self.all_symbols
         output = []
         current_string = ''
-        for symbol in array:
-            if type(symbol) == str:
-                current_string += symbol
-                if array[-1] == symbol:
+        for i in range(0, len(array)):
+            if type(array[i]) == str:
+                current_string += array[i]
+                # if array[-1] == symbol:  # THIS IS INCORRECT FIX NOW
+                if i == len(array)-1:  # THIS IS INCORRECT FIX NOW
                     output.append(current_string)
             else:
                 output.append(current_string)
-                output.append(symbol)
+                output.append(array[i])
                 current_string = ''
         self.divided_symbols = output
 
@@ -91,7 +89,8 @@ class TextContainer(pygame.Surface):
             if type(x) == str:
                 output.append(self.font.get_rect(x))
             else:
-                output.append(x.get_character_size())
+                x.render_symbol()
+                output.append(x.get_rect())
         return output
 
     @staticmethod
@@ -101,7 +100,7 @@ class TextContainer(pygame.Surface):
         return pygame.Rect((0, 0), (width, height))
 
     def render_symbols(self):
-
+        self.divide_symbols()
         symbol_rects = self.find_symbol_rects()
         total_size = self.find_total_size(symbol_rects)
         super().__init__((total_size.width, total_size.height))
@@ -109,11 +108,11 @@ class TextContainer(pygame.Surface):
         width_sum = 0
         for i in range(0, len(self.divided_symbols)):
             if type(self.divided_symbols[i]) == str:
-                surface = self.font.render(self.divided_symbols[i])
+                surface = self.font.render(self.divided_symbols[i], fgcolor=pygame.Color('white'))[0]
+                self.blit(surface, (width_sum, 0))
             else:
-                surface = self.divided_symbols[i].render()
-            self.blit(surface, (width_sum, 0))
-            width_sum += self.symbol_rects[i]
+                self.blit(self.divided_symbols[i], (width_sum, 0))
+            width_sum += symbol_rects[i].width
 
     def backtrack_from_pointer(self):
         operators = '+-*'

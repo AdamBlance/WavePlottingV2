@@ -10,7 +10,8 @@ main_surface = pygame.display.set_mode((screen_width, screen_height))
 
 event_manager = EventManager()
 
-my_fraction = Fraction(event_manager, 40, 22, 7)
+test_fraction = Fraction(event_manager, 30, ['3'], ['4'])
+my_fraction = Fraction(event_manager, 40, ['2', '2', test_fraction], ['7'])
 
 while not event_manager.has_quit:
 
