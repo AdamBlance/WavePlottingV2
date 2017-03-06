@@ -5,32 +5,41 @@ from TextContainer import TextContainer
 
 class Fraction(SpecialCharacter):
 
-    line_padding = 7  # PPP|PPP
-    side_padding = 8
+    line_padding = 7  # should always be odd if line is 1px thick
+    side_padding = 8  # should always be even
 
     def __init__(self, event_manager, font_size, top=None, bottom=None):
 
         self.event_manager = event_manager
-        self.numerator = TextContainer(self.event_manager, font_size)
+
+        self.numerator = TextContainer(self.event_manager, font_size=font_size)
+        if top is not None:
+            self.numerator.set_symbols_to(top)
         self.denominator = TextContainer(self.event_manager, font_size)
+        if bottom is not None:
+            self.denominator.set_symbols_to(bottom)
 
-        bound_size = self.get_character_size()
-        super().__init__(bound_size, [self.numerator, self.denominator], [font_size]*2)
+        self.render_symbol()
+        rect = self.get_rect()
+        super().__init__((rect.width, rect.height), [self.numerator, self.denominator])
 
-    def get_character_size(self):
-        blank_size = self.numerator.font.get_rect(self.numerator.blank_char)
-        if not self.numerator.all_symbols:
-            top = blank_size
-        else:
-            pass
-            # calculate size of textcontainer with special chars
-        if not self.denominator.all_symbols:
-            bottom = blank_size
-        else:
-            pass
-            # calculate size of textcontainer with special chars
+    def render_symbol(self):
+        self.numerator.render_symbols()
+        self.denominator.render_symbols()
+
+        top = self.numerator.get_rect()
+        bottom = self.denominator.get_rect()
 
         total_height = top.height + self.line_padding + bottom.height
         total_width = max(top.width, bottom.width) + self.line_padding
-        return pygame.Rect((0, 0), (total_width, total_height))
 
+        super().reinit_surface((total_width, total_height))
+
+        halfway = top.height + (self.line_padding-1)/2
+        pygame.draw.line(self, pygame.Color('white'), (0, halfway), (total_width, halfway))
+
+        top_centre = total_width/2 - top.width/2
+        self.blit(self.numerator, (top_centre, 0))
+
+        bottom_centre = total_width/2 - bottom.width/2
+        self.blit(self.denominator, (bottom_centre, total_height-bottom.height))
