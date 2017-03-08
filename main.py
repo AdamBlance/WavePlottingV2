@@ -1,4 +1,5 @@
 from EventManager import EventManager
+import pygame
 from TextContainer import TextContainer
 import pygame.freetype
 
@@ -9,15 +10,17 @@ main_surface = pygame.display.set_mode((screen_width, screen_height))
 
 event_manager = EventManager()
 
-# text_container = TextContainer
+text_container = TextContainer(event_manager, font_size=40, size=(400, 100))
 
 while not event_manager.has_quit:
 
     event_manager.clock.tick(60)
     event_manager.update()
+    main_surface.fill(pygame.Color('#461763'))
 
-    main_surface.fill(pygame.Color('green'))
+    text_container.update()
 
+    main_surface.blit(text_container, (0, 0))
     pygame.display.update()
 
 pygame.quit()

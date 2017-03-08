@@ -40,6 +40,8 @@ class TextContainer(pygame.Surface):
         self.pointer_index = 0
         self.pointer_visible = True
 
+        self.special_character_index = -1
+
         if size is None:
             self.is_master_container = False
             super().__init__((0, 0))
@@ -50,6 +52,8 @@ class TextContainer(pygame.Surface):
     def backspace(self):
         if self.pointer_index != 0:
             self.pointer_index -= 1
+            print(self.pointer_index)
+            print(self.all_symbols)
             self.all_symbols.pop(self.pointer_index)
 
     def delete(self):
@@ -57,9 +61,7 @@ class TextContainer(pygame.Surface):
             self.all_symbols.pop(self.pointer_index)
 
     def add_symbol(self, symbol):
-        # self.all_symbols.insert(self.pointer_index, symbol)
-        self.all_symbols.insert(0, symbol)
-        self.pointer_index += 1
+        self.all_symbols.insert(self.pointer_index, symbol)
 
     def set_symbols_to(self, symbols_list):
         self.all_symbols = symbols_list
@@ -101,12 +103,17 @@ class TextContainer(pygame.Surface):
         self.divide_symbols()
         symbol_rects = self.find_symbol_rects()
         total_size = self.find_total_size(symbol_rects)
-        super().__init__((total_size.width, total_size.height))
+        if not self.is_master_container:
+            super().__init__((total_size.width, total_size.height))
 
         width_sum = 0
+        if len(self.all_symbols) == 0:
+            surface = self.font.render(self.blank_char, fgcolor=self.colour)[0]
+            self.blit(surface, (total_size.width/2 - self.font.get_rect(self.blank_char).width/2,
+                                total_size.height/2 - self.font.get_rect(self.blank_char).height/2))
         for i in range(0, len(self.divided_symbols)):
             if type(self.divided_symbols[i]) == str:
-                surface = self.font.render(self.divided_symbols[i], fgcolor=pygame.Color('white'))[0]
+                surface = self.font.render(self.divided_symbols[i], fgcolor=self.colour)[0]
                 self.blit(surface, (width_sum, total_size.height/2 - symbol_rects[i].height/2))
             else:
                 self.blit(self.divided_symbols[i], (width_sum, 0))
@@ -126,51 +133,47 @@ class TextContainer(pygame.Surface):
                 if self.all_symbols[i+1] in operators:
                     return self.all_symbols[i+2:]
                 else:
-                    return self.all_symbols[i+1:]
-        return self.all_symbols[equals_pos+1:]
+                    return self.all_symbols[equals_pos+1:]
 
     def update(self):
 
+        self.fill(pygame.Color('black'))
+
+        if len(self.all_symbols) != 0:
+            self.render_symbols()
+
         if self.event_manager.key_pressed == K_RIGHT and self.is_current:
-            if self.pointer_index != len(self.all_symbols)-1:
-                if not self.is_master_container:
-                    pass
-                else:
-                    if type(self.all_symbols[self.pointer_index + 1]) != str:
-                        self.is_current = False
-                        self.all_symbols[self.pointer_index + 1].text_container_order = True
+            print(self.pointer_index, len(self.all_symbols))
+            if self.pointer_index != len(self.all_symbols):
+                if type(self.all_symbols[self.pointer_index + 1]) == str:
+
                     self.pointer_index += 1
+                else:
+                    if self.special_character_index+1 != len(self.all_symbols[self.pointer_index].text_container_order)-1:
+                        self.is_current = False
+                        self.special_character_index += 1
+                        self.all_symbols[self.pointer_index+1].is_current = True
+            else:
+                self.is_current = False
 
-        # need to have pointer leave and enter TextContainers in order
+        pressed = self.event_manager.entered_chars()
+        if pressed is not None:
+            if pressed == 'backspace':
+                self.backspace()
+            elif pressed == 'delete':
+                self.delete()
+            else:
+                self.add_symbol(pressed)
+                self.pointer_index += 1
 
-        # if self.event_manager.key_pressed == K_LEFT and self.is_current:
-        #     if self.pointer_index == 0:
-        #         if not self.is_master_container:
-        #             self.is_current = False
-        #     else:
-        #         self.pointer_index -= 1
-        #
-        # elif self.event_manager.key_pressed == K_RIGHT:
-        #     if self.pointer_index == len(self.all_symbols):
-        #         if not self.is_master_container:
-        #             self.is_current = False
-        #     else:
-        #         self.pointer_index += 1
-        #
-        # pressed = self.event_manager.entered_chars()
-        # if pressed is not None:
-        #     if pressed == 'backspace':
-        #         self.backspace()
-        #     elif pressed == 'delete':
-        #         self.delete()
-        #     # elif pressed == '/':
-        #     else:
-        #         self.add_symbol(pressed)
-        #
-        # if self.event_manager.total_ticks % 20 == 0:
-        #     if self.pointer_visible:
-        #         self.pointer_visible = False
-        #     else:
-        #         self.pointer_visible = True
+        if self.event_manager.total_ticks % 20 == 0:
+            if self.pointer_visible:
+                self.pointer_visible = False
+            else:
+                self.pointer_visible = True
+        if self.pointer_visible and self.is_current:
+            rects = self.find_symbol_rects()
+            temp = sum([x.width for x in rects[:self.pointer_index]])
+            pygame.draw.line(self, self.colour, (temp, 0), (temp, self.get_rect().height))
 
-        pass
+        print(self.pointer_index, self.all_symbols)
