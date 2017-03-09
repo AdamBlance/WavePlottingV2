@@ -116,21 +116,6 @@ class TextContainer(pygame.Surface):
             width_sum += symbol_rects[i].width
 
     def backtrack_from_pointer(self):
-        # if len(self.all_symbols) != 0:
-        #     operators = ['+', '-', '*']
-        #     if self.all_symbols[-1] in operators + ['=', ' ']:
-        #         return None
-
-        #
-        #     for i in range(len(self.all_symbols)-1, end-1, -1):
-        #         if self.all_symbols[i] == ' ':
-        #             if self.all_symbols[i+1] in operators:
-        #                 return self.all_symbols[i+2:]
-        #             else:
-        #                 return self.all_symbols[end+1:]
-        #     else:
-        #         return self.all_symbols[end:]
-
         array = self.all_symbols[:self.pointer_index]
         for i in range(len(array)-1, -1, -1):
             if array[i] == ' ':
@@ -168,10 +153,15 @@ class TextContainer(pygame.Surface):
                 back = self.backtrack_from_pointer()
                 self.all_symbols = self.all_symbols[:-len(back)]
                 if back:
-                    self.add_symbol(Fraction.Fraction(self.event_manager, self.font.size*0.8, top=back))
+                    print('MAKING MORE ISTA')
+                    symbol = Fraction.Fraction(self.event_manager, self.font.size*0.8, top=back)
                 else:
-                    self.add_symbol(Fraction.Fraction(self.event_manager, self.font.size*0.8))
+                    symbol = Fraction.Fraction(self.event_manager, self.font.size*0.8)
+                self.is_current = False
+                symbol.denominator.is_current = True
+                self.add_symbol(symbol)
                 self.pointer_index += 1
+
             else:
                 self.add_symbol(pressed)
                 self.pointer_index += 1
@@ -185,4 +175,12 @@ class TextContainer(pygame.Surface):
             rects = self.find_symbol_rects()
             temp = sum([x.width for x in rects[:self.pointer_index]])
             pygame.draw.line(self, self.colour, (temp, 0), (temp, self.get_rect().height))
-        print(self.all_symbols)
+
+        if self.is_master_container:
+            print('master - ' + str(self.all_symbols))
+        else:
+            print('fraction - ' + str(self.all_symbols))
+
+        for item in self.all_symbols:
+            if type(item) != str:
+                    item.update()

@@ -1,5 +1,4 @@
 from EventManager import EventManager
-import pygame
 from TextContainer import TextContainer
 import pygame.freetype
 

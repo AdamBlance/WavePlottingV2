@@ -14,7 +14,7 @@ class Fraction(SpecialCharacter):
 
         self.event_manager = event_manager
 
-        self.numerator = TextContainer.TextContainer(self.event_manager, font_size=font_size)
+        self.numerator = TextContainer.TextContainer(self.event_manager, font_size)
         if top is not None:
             self.numerator.set_symbols_to(top)
         self.denominator = TextContainer.TextContainer(self.event_manager, font_size)
@@ -47,3 +47,8 @@ class Fraction(SpecialCharacter):
 
         bottom_centre = total_width/2 - bottom.width/2
         self.blit(self.denominator, (bottom_centre, total_height-bottom.height))
+
+    def update(self):
+        self.denominator.update()
+        self.numerator.update()
+        print("I'M GETTING CALLED")
