@@ -1,3 +1,4 @@
+from Fraction import Fraction
 import pygame
 import pygame.freetype
 from pygame.locals import *
@@ -52,8 +53,6 @@ class TextContainer(pygame.Surface):
     def backspace(self):
         if self.pointer_index != 0:
             self.pointer_index -= 1
-            print(self.pointer_index)
-            print(self.all_symbols)
             self.all_symbols.pop(self.pointer_index)
 
     def delete(self):
@@ -123,7 +122,10 @@ class TextContainer(pygame.Surface):
         operators = '+-*'
         if self.all_symbols[-1] in operators + '=' + ' ':
             return ''
-        equals_pos = len(self.all_symbols)-1 - self.all_symbols[::-1].index('=')
+        try:
+            equals_pos = len(self.all_symbols)-1 - self.all_symbols[::-1].index('=')
+        except ValueError:
+            equals_pos = 0
         if equals_pos != -1:
             end = 0
         else:
@@ -146,7 +148,6 @@ class TextContainer(pygame.Surface):
             print(self.pointer_index, len(self.all_symbols))
             if self.pointer_index != len(self.all_symbols):
                 if type(self.all_symbols[self.pointer_index + 1]) == str:
-
                     self.pointer_index += 1
                 else:
                     if self.special_character_index+1 != len(self.all_symbols[self.pointer_index].text_container_order)-1:
@@ -154,7 +155,8 @@ class TextContainer(pygame.Surface):
                         self.special_character_index += 1
                         self.all_symbols[self.pointer_index+1].is_current = True
             else:
-                self.is_current = False
+                if not self.is_master_container:
+                    self.is_current = False
 
         pressed = self.event_manager.entered_chars()
         if pressed is not None:
@@ -162,6 +164,13 @@ class TextContainer(pygame.Surface):
                 self.backspace()
             elif pressed == 'delete':
                 self.delete()
+            elif pressed == '/':
+                back = self.backtrack_from_pointer()
+                print(back)
+                if back != '':
+                    self.add_symbol(Fraction(self.event_manager, self.font.size*0.8, top=back))
+                else:
+                    self.add_symbol(Fraction(self.event_manager, self.font.size*0.8))
             else:
                 self.add_symbol(pressed)
                 self.pointer_index += 1
@@ -175,5 +184,3 @@ class TextContainer(pygame.Surface):
             rects = self.find_symbol_rects()
             temp = sum([x.width for x in rects[:self.pointer_index]])
             pygame.draw.line(self, self.colour, (temp, 0), (temp, self.get_rect().height))
-
-        print(self.pointer_index, self.all_symbols)

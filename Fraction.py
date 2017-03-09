@@ -1,6 +1,6 @@
 import pygame
-from SpecialCharacter import SpecialCharacter
 from TextContainer import TextContainer
+from SpecialCharacter import SpecialCharacter
 
 pygame.init()
 
