@@ -1,4 +1,4 @@
-from Fraction import Fraction
+import Fraction
 import pygame
 import pygame.freetype
 from pygame.locals import *
@@ -10,6 +10,9 @@ from sympy.parsing.sympy_parser import \
     convert_xor
 pygame.freetype.init()
 
+# Allowing y= AND x= functions is going to take too long to implement
+# For the moment will not support an '=' symbol
+
 
 class TextContainer(pygame.Surface):
 
@@ -17,15 +20,9 @@ class TextContainer(pygame.Surface):
     parsing_flags = standard_transformations + (implicit_multiplication_application,
                                                 function_exponentiation,
                                                 convert_xor)
-
     font_location = 'media/DejaVuSans.ttf'
     blank_char = '\u25a2'
     colour = pygame.Color('white')
-
-# the size property dictates the actual bounds of the surface
-# if not specified, the surface will scale with entered text by re-instantiating the Surface
-# the font size variable will dictate the size of the font and the height of the Surface
-# this is only true if the TextContainer contains no special characters - in that case the Surface will scale
 
     def __init__(self, event_manager, font_size=20, size=None):
 
@@ -112,30 +109,34 @@ class TextContainer(pygame.Surface):
                                 total_size.height/2 - self.font.get_rect(self.blank_char).height/2))
         for i in range(0, len(self.divided_symbols)):
             if type(self.divided_symbols[i]) == str:
-                surface = self.font.render(self.divided_symbols[i], fgcolor=self.colour)[0]
+                surface = self.font.render(self.divided_symbols[i], fgcolor=self.colour, bgcolor=pygame.Color('red'))[0]
                 self.blit(surface, (width_sum, total_size.height/2 - symbol_rects[i].height/2))
             else:
                 self.blit(self.divided_symbols[i], (width_sum, 0))
             width_sum += symbol_rects[i].width
 
     def backtrack_from_pointer(self):
-        operators = '+-*'
-        if self.all_symbols[-1] in operators + '=' + ' ':
-            return ''
-        try:
-            equals_pos = len(self.all_symbols)-1 - self.all_symbols[::-1].index('=')
-        except ValueError:
-            equals_pos = 0
-        if equals_pos != -1:
-            end = 0
+        # if len(self.all_symbols) != 0:
+        #     operators = ['+', '-', '*']
+        #     if self.all_symbols[-1] in operators + ['=', ' ']:
+        #         return None
+
+        #
+        #     for i in range(len(self.all_symbols)-1, end-1, -1):
+        #         if self.all_symbols[i] == ' ':
+        #             if self.all_symbols[i+1] in operators:
+        #                 return self.all_symbols[i+2:]
+        #             else:
+        #                 return self.all_symbols[end+1:]
+        #     else:
+        #         return self.all_symbols[end:]
+
+        array = self.all_symbols[:self.pointer_index]
+        for i in range(len(array)-1, -1, -1):
+            if array[i] == ' ':
+                return array[i+1:]
         else:
-            end = equals_pos
-        for i in range(len(self.all_symbols)-1, end-1, -1):
-            if self.all_symbols[i] == ' ':
-                if self.all_symbols[i+1] in operators:
-                    return self.all_symbols[i+2:]
-                else:
-                    return self.all_symbols[equals_pos+1:]
+            return array
 
     def update(self):
 
@@ -145,7 +146,6 @@ class TextContainer(pygame.Surface):
             self.render_symbols()
 
         if self.event_manager.key_pressed == K_RIGHT and self.is_current:
-            print(self.pointer_index, len(self.all_symbols))
             if self.pointer_index != len(self.all_symbols):
                 if type(self.all_symbols[self.pointer_index + 1]) == str:
                     self.pointer_index += 1
@@ -166,11 +166,12 @@ class TextContainer(pygame.Surface):
                 self.delete()
             elif pressed == '/':
                 back = self.backtrack_from_pointer()
-                print(back)
-                if back != '':
-                    self.add_symbol(Fraction(self.event_manager, self.font.size*0.8, top=back))
+                self.all_symbols = self.all_symbols[:-len(back)]
+                if back:
+                    self.add_symbol(Fraction.Fraction(self.event_manager, self.font.size*0.8, top=back))
                 else:
-                    self.add_symbol(Fraction(self.event_manager, self.font.size*0.8))
+                    self.add_symbol(Fraction.Fraction(self.event_manager, self.font.size*0.8))
+                self.pointer_index += 1
             else:
                 self.add_symbol(pressed)
                 self.pointer_index += 1
@@ -184,3 +185,4 @@ class TextContainer(pygame.Surface):
             rects = self.find_symbol_rects()
             temp = sum([x.width for x in rects[:self.pointer_index]])
             pygame.draw.line(self, self.colour, (temp, 0), (temp, self.get_rect().height))
+        print(self.all_symbols)

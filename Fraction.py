@@ -1,5 +1,5 @@
 import pygame
-from TextContainer import TextContainer
+import TextContainer
 from SpecialCharacter import SpecialCharacter
 
 pygame.init()
@@ -14,10 +14,10 @@ class Fraction(SpecialCharacter):
 
         self.event_manager = event_manager
 
-        self.numerator = TextContainer(self.event_manager, font_size=font_size)
+        self.numerator = TextContainer.TextContainer(self.event_manager, font_size=font_size)
         if top is not None:
             self.numerator.set_symbols_to(top)
-        self.denominator = TextContainer(self.event_manager, font_size)
+        self.denominator = TextContainer.TextContainer(self.event_manager, font_size)
         if bottom is not None:
             self.denominator.set_symbols_to(bottom)
 
