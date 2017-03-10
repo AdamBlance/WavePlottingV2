@@ -51,4 +51,3 @@ class Fraction(SpecialCharacter):
     def update(self):
         self.denominator.update()
         self.numerator.update()
-        print("I'M GETTING CALLED")

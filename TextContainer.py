@@ -109,7 +109,7 @@ class TextContainer(pygame.Surface):
                                 total_size.height/2 - self.font.get_rect(self.blank_char).height/2))
         for i in range(0, len(self.divided_symbols)):
             if type(self.divided_symbols[i]) == str:
-                surface = self.font.render(self.divided_symbols[i], fgcolor=self.colour, bgcolor=pygame.Color('red'))[0]
+                surface = self.font.render(self.divided_symbols[i], fgcolor=self.colour)[0]
                 self.blit(surface, (width_sum, total_size.height/2 - symbol_rects[i].height/2))
             else:
                 self.blit(self.divided_symbols[i], (width_sum, 0))
@@ -143,28 +143,34 @@ class TextContainer(pygame.Surface):
                 if not self.is_master_container:
                     self.is_current = False
 
-        pressed = self.event_manager.entered_chars()
-        if pressed is not None:
-            if pressed == 'backspace':
-                self.backspace()
-            elif pressed == 'delete':
-                self.delete()
-            elif pressed == '/':
-                back = self.backtrack_from_pointer()
-                self.all_symbols = self.all_symbols[:-len(back)]
-                if back:
-                    print('MAKING MORE ISTA')
-                    symbol = Fraction.Fraction(self.event_manager, self.font.size*0.8, top=back)
-                else:
-                    symbol = Fraction.Fraction(self.event_manager, self.font.size*0.8)
-                self.is_current = False
-                symbol.denominator.is_current = True
-                self.add_symbol(symbol)
-                self.pointer_index += 1
+        if self.is_current:
+            pressed = self.event_manager.entered_chars()
+            if pressed is not None:
+                if pressed == 'backspace':
+                    self.backspace()
+                elif pressed == 'delete':
+                    self.delete()
+                elif pressed == '/':
+                    back = self.backtrack_from_pointer()
+                    self.all_symbols = self.all_symbols[:-len(back)]
+                    if back:
+                        symbol = Fraction.Fraction(self.event_manager, self.font.size*0.8, top=back)
+                        symbol.numerator.is_current = False
+                        symbol.denominator.is_current = True
 
-            else:
-                self.add_symbol(pressed)
-                self.pointer_index += 1
+                        print(symbol.denominator.is_current)
+
+                    else:
+                        symbol = Fraction.Fraction(self.event_manager, self.font.size*0.8)
+                        symbol.numerator.is_current = True
+
+                    self.is_current = False
+                    self.add_symbol(symbol)
+
+                    self.pointer_index += 1
+                else:
+                    self.add_symbol(pressed)
+                    self.pointer_index += 1
 
         if self.event_manager.total_ticks % 20 == 0:
             if self.pointer_visible:
@@ -176,11 +182,10 @@ class TextContainer(pygame.Surface):
             temp = sum([x.width for x in rects[:self.pointer_index]])
             pygame.draw.line(self, self.colour, (temp, 0), (temp, self.get_rect().height))
 
-        if self.is_master_container:
-            print('master - ' + str(self.all_symbols))
-        else:
-            print('fraction - ' + str(self.all_symbols))
-
         for item in self.all_symbols:
+
             if type(item) != str:
-                    item.update()
+                print('numerator - ' + str(item.numerator.all_symbols) + ' active - ' + str(item.numerator.is_current))
+                print('denominator - ' + str(item.denominator.all_symbols) + ' active - ' + str(item.denominator.is_current))
+
+                item.update()

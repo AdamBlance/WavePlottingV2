@@ -49,6 +49,7 @@ class EventManager:
     def entered_chars(self):
         if self.key_pressed is not None:
             char = self.key_pressed
+            self.key_pressed = None
             string = chr(char)
             if (string.isalpha() or string in self.ascii_dict) and char < 128:
                 if self.shift_held:
@@ -67,8 +68,6 @@ class EventManager:
         self.total_ticks += 1
 
         self.reset_states()
-
-        self.key_pressed = 47
 
         for event in pygame.event.get():
 
