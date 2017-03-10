@@ -39,7 +39,7 @@ class TextContainer(pygame.Surface):
 
         self.pointer_visible = True
 
-        self.special_character_index = -1
+        self.special_character_index = 0
 
         if size is None:
             self.is_master_container = False
@@ -98,10 +98,20 @@ class TextContainer(pygame.Surface):
 
     def render_symbols(self):
         self.divide_symbols()
+
         symbol_rects = self.find_symbol_rects()
         total_size = self.find_total_size(symbol_rects)
         if not self.is_master_container:
-            super().__init__((total_size.width, total_size.height))
+            super().__init__((total_size.width+1, total_size.height))
+
+        if self.pointer_visible and self.is_current:
+            total_to_point = 0
+            for symbol in self.all_symbols[:self.pointer_index]:
+                if type(symbol) == str:
+                    total_to_point += self.font.get_rect(symbol).width
+                else:
+                    total_to_point += symbol.get_rect().width
+            pygame.draw.line(self, self.colour, (total_to_point, 0), (total_to_point, self.get_rect().height))
 
         width_sum = 0
         if len(self.all_symbols) == 0:
@@ -128,6 +138,10 @@ class TextContainer(pygame.Surface):
 
         self.fill(pygame.Color('black'))
 
+        for item in self.all_symbols:
+            if type(item) != str:
+                item.update()
+
         if len(self.all_symbols) != 0:
             self.render_symbols()
 
@@ -136,10 +150,14 @@ class TextContainer(pygame.Surface):
                 if type(self.all_symbols[self.pointer_index + 1]) == str:
                     self.pointer_index += 1
                 else:
-                    if self.special_character_index+1 != len(self.all_symbols[self.pointer_index].text_container_order)-1:
-                        self.is_current = False
-                        self.special_character_index += 1
-                        self.all_symbols[self.pointer_index+1].is_current = True
+                    print('yo')
+                    self.is_current = False
+                    self.all_symbols[self.pointer_index].text_container_order[0].is_current = True
+                    # if self.special_character_index+1 != len(self.all_symbols[self.pointer_index].text_container_order)-1:
+                    #     self.is_current = False
+                    #     self.special_character_index += 1
+                    #     print(self.special_character_index)
+                    #     self.all_symbols[self.pointer_index+1].text_container_order[self.special_character_index].is_current = True
             else:
                 if not self.is_master_container:
                     self.is_current = False
@@ -158,12 +176,10 @@ class TextContainer(pygame.Surface):
                         symbol = Fraction.Fraction(self.event_manager, self.font.size*0.8, top=back)
                         symbol.numerator.is_current = False
                         symbol.denominator.is_current = True
-
-                        print(symbol.denominator.is_current)
-
                     else:
                         symbol = Fraction.Fraction(self.event_manager, self.font.size*0.8)
                         symbol.numerator.is_current = True
+                        symbol.denominator.is_current = False
 
                     self.is_current = False
                     self.add_symbol(symbol)
@@ -178,17 +194,3 @@ class TextContainer(pygame.Surface):
                 self.pointer_visible = False
             else:
                 self.pointer_visible = True
-
-        for item in self.all_symbols:
-            if type(item) != str:
-                item.update()
-
-        print('master - ' + str(self.is_master_container) + ' current - ' + str(self.is_current))
-
-        if self.pointer_visible and self.is_current:
-            rects = self.find_symbol_rects()
-            temp = sum([x.width for x in rects[:self.pointer_index]])
-
-            print('REALLY')
-            self.fill(pygame.Color('blue'))
-            pygame.draw.line(self, self.colour, (temp, 0), (temp, self.get_rect().height), 10)
