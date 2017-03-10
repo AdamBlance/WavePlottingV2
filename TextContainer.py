@@ -36,6 +36,7 @@ class TextContainer(pygame.Surface):
 
         self.pointer_pos = 0
         self.pointer_index = 0
+
         self.pointer_visible = True
 
         self.special_character_index = -1
@@ -177,15 +178,17 @@ class TextContainer(pygame.Surface):
                 self.pointer_visible = False
             else:
                 self.pointer_visible = True
+
+        for item in self.all_symbols:
+            if type(item) != str:
+                item.update()
+
+        print('master - ' + str(self.is_master_container) + ' current - ' + str(self.is_current))
+
         if self.pointer_visible and self.is_current:
             rects = self.find_symbol_rects()
             temp = sum([x.width for x in rects[:self.pointer_index]])
-            pygame.draw.line(self, self.colour, (temp, 0), (temp, self.get_rect().height))
 
-        for item in self.all_symbols:
-
-            if type(item) != str:
-                print('numerator - ' + str(item.numerator.all_symbols) + ' active - ' + str(item.numerator.is_current))
-                print('denominator - ' + str(item.denominator.all_symbols) + ' active - ' + str(item.denominator.is_current))
-
-                item.update()
+            print('REALLY')
+            self.fill(pygame.Color('blue'))
+            pygame.draw.line(self, self.colour, (temp, 0), (temp, self.get_rect().height), 10)
