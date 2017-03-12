@@ -131,23 +131,30 @@ class TextContainer(pygame.Surface):
             total_to_point = sum([x.width for x in pointer_rect])
             pygame.draw.line(self, self.colour, (total_to_point, 0), (total_to_point, self.get_rect().height))
 
+    # Needs to return an index instead
+
     def backtrack_from_pointer(self):
 
-        output = []
+        output = 0
 
         if self.all_symbols:
             if self.all_symbols[-1] not in [' ', '+', '-', '*']:
                 array = self.all_symbols[:self.pointer_index]
                 for i in range(len(array)-1, -1, -1):
                     if array[i] == ' ':
-                        output = array[i+1:]
+                        # output = array[i+1:]
+                        output = i+1
                         break
-                else:
-                    output = array
-        if len(output) != 0:
-            while output[0] in ['+', '-', '*']:
-                output.pop(0)
-        return output
+                # else:
+                #     output = array
+
+        # if len(output) != 0:
+        track = self.pointer_index
+        if self.pointer_index != output:
+            track = output
+            while self.all_symbols[:self.pointer_index][track] in ['+', '-', '*']:
+                track += 1
+        return track
 
     def update(self):
 
@@ -189,7 +196,6 @@ class TextContainer(pygame.Surface):
                     self.pointer_index = i
                     self.is_current = True
 
-
         if self.is_current:
             pressed = self.event_manager.entered_chars()
             if pressed is not None:
@@ -200,9 +206,11 @@ class TextContainer(pygame.Surface):
                 elif pressed == '/':
                     back = self.backtrack_from_pointer()
 
-                    if back:
-                        self.all_symbols = self.all_symbols[:-len(back)]
-                        symbol = Fraction.Fraction(self.event_manager, self.font.size*0.8, top=back)
+                    if back != self.pointer_index:
+                        temp = self.all_symbols.copy()
+                        del self.all_symbols[back:self.pointer_index]
+                        symbol = Fraction.Fraction(self.event_manager, self.font.size*0.8, top=temp[back:self.pointer_index])
+                        self.pointer_index -= self.pointer_index-back
                         symbol.numerator.is_current = False
                         symbol.denominator.is_current = True
                     else:
