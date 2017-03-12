@@ -112,10 +112,6 @@ class TextContainer(pygame.Surface):
         self.divide_symbols(self.pointer_index)
         pointer_rect = self.find_symbol_rects()
 
-        if self.pointer_visible and self.is_current:
-            total_to_point = sum([x.width for x in pointer_rect])
-            pygame.draw.line(self, self.colour, (total_to_point, 0), (total_to_point, self.get_rect().height))
-
         self.divided_symbols = temp
 
         width_sum = 0
@@ -130,6 +126,10 @@ class TextContainer(pygame.Surface):
             else:
                 self.blit(self.divided_symbols[i], (width_sum, 0))
             width_sum += symbol_rects[i].width
+
+        if self.pointer_visible and self.is_current:
+            total_to_point = sum([x.width for x in pointer_rect])
+            pygame.draw.line(self, self.colour, (total_to_point, 0), (total_to_point, self.get_rect().height))
 
     def backtrack_from_pointer(self):
 
@@ -181,14 +181,11 @@ class TextContainer(pygame.Surface):
                     self.leave_left = True
 
         for i in range(len(self.all_symbols)):
-            print(self.all_symbols[i])
             if type(self.all_symbols[i]) != str:
-                print(self.all_symbols[i])
                 if self.all_symbols[i].leave_right:
                     self.pointer_index = i+1
                     self.is_current = True
                 elif self.all_symbols[i].leave_left:
-                    print('hello')
                     self.pointer_index = i
                     self.is_current = True
 
