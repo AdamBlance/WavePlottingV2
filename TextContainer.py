@@ -31,6 +31,9 @@ class TextContainer(pygame.Surface):
         self.event_manager = event_manager
         self.is_current = True
 
+        self.leave_left = False
+        self.leave_right = False
+
         self.all_symbols = []
         self.divided_symbols = []
 
@@ -148,22 +151,43 @@ class TextContainer(pygame.Surface):
 
     def update(self):
 
+        self.leave_left = False
+        self.leave_right = False
+
         self.fill(pygame.Color('black'))
 
         if self.event_manager.key_pressed == K_RIGHT and self.is_current:
+            self.event_manager.key_pressed = None
             if self.pointer_index != len(self.all_symbols):
-                if type(self.all_symbols[self.pointer_index + 1]) == str:
+                if type(self.all_symbols[self.pointer_index]) == str:
                     self.pointer_index += 1
                 else:
                     self.is_current = False
                     self.all_symbols[self.pointer_index].text_container_order[0].is_current = True
-                    # if self.special_character_index+1 != len(self.all_symbols[self.pointer_index].text_container_order)-1:
-                    #     self.is_current = False
-                    #     self.special_character_index += 1
-                    #     self.all_symbols[self.pointer_index+1].text_container_order[self.special_character_index].is_current = True
             else:
                 if not self.is_master_container:
+                    self.leave_right = True
+
+        if self.event_manager.key_pressed == K_LEFT and self.is_current:
+            self.event_manager.key_pressed = None
+            if self.pointer_index != 0:
+                if type(self.all_symbols[self.pointer_index-1]) == str:
+                    self.pointer_index -= 1
+                else:
                     self.is_current = False
+                    self.all_symbols[self.pointer_index-1].text_container_order[-1].is_current = True
+            else:
+                if not self.is_master_container:
+                    self.leave_left = True
+
+        for i in range(len(self.all_symbols)-1):
+            if type(self.all_symbols[i]) != str:
+                if self.all_symbols[i].leave_right:
+                    self.pointer_index = i+1
+                    self.is_current = True
+                elif self.all_symbols[i].leave_left:
+                    self.pointer_index = i
+                    self.is_current = True
 
         if self.is_current:
             pressed = self.event_manager.entered_chars()
@@ -182,16 +206,16 @@ class TextContainer(pygame.Surface):
                         symbol.denominator.is_current = True
                     else:
                         symbol = Fraction.Fraction(self.event_manager, self.font.size*0.8)
-                        symbol.numerator.is_current = True
+                        symbol.numerator.is_current = False
                         symbol.denominator.is_current = False
 
-                    self.is_current = False
+                    # self.is_current = False
                     self.add_symbol(symbol)
 
-                    self.pointer_index += 1
+                    # self.pointer_index += 1
                 else:
                     self.add_symbol(pressed)
-                    self.pointer_index += 1
+                    # self.pointer_index += 1
 
         if self.event_manager.total_ticks % 20 == 0:
             if self.pointer_visible:

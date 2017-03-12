@@ -21,6 +21,9 @@ class Fraction(SpecialCharacter):
         if bottom is not None:
             self.denominator.set_symbols_to(bottom)
 
+        self.leave_left = False
+        self.leave_right = True
+
         self.render_symbol()
 
         rect = self.get_rect()
@@ -49,5 +52,31 @@ class Fraction(SpecialCharacter):
         self.blit(self.denominator, (bottom_centre, total_height-bottom.height))
 
     def update(self):
+
+        self.leave_left = False
+        self.leave_right = False
+
         self.denominator.update()
         self.numerator.update()
+
+        current_index = -1
+        for i in range(len(self.text_container_order)):
+            if self.text_container_order[i].is_current:
+                current_index = i
+
+        for box in self.text_container_order:
+            if box.leave_left:
+                if current_index == 0:
+                    box.is_current = False
+                    self.leave_left = True
+                else:
+                    box.is_current = False
+                    self.text_container_order[current_index-1].is_current = True
+
+            elif box.leave_right:
+                if current_index == len(self.text_container_order)-1:
+                    self.leave_right = True
+                    box.is_current = False
+                else:
+                    box.is_current = False
+                    self.text_container_order[current_index+1].is_current = True
