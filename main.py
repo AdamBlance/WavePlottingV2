@@ -9,7 +9,7 @@ main_surface = pygame.display.set_mode((screen_width, screen_height))
 
 event_manager = EventManager()
 
-text_container = TextContainer(event_manager, font_size=30, size=(400, 100))
+text_container = TextContainer(event_manager, 30, (400, 100))
 
 while not event_manager.has_quit:
 
