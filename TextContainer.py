@@ -1,5 +1,6 @@
 import Fraction
 import Indice
+import Root
 import pygame
 import pygame.freetype
 from pygame.locals import *
@@ -198,6 +199,13 @@ class TextContainer(pygame.Surface):
                     self.backspace()
                 elif pressed == 'delete':
                     self.delete()
+                elif pressed == '%':
+                    self.is_current = False
+                    symbol = Root.Root(self.event_manager, self.font.size, True)
+                    # symbol.contents.is_current = True
+                    symbol.contents.is_current = False
+                    symbol.nth_root.is_current = True
+                    self.add_symbol(symbol)
                 elif pressed == '^':
                     self.is_current = False
                     symbol = Indice.Indice(self.event_manager, self.font.size*0.7)

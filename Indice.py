@@ -1,5 +1,3 @@
-import pygame
-import pygame.freetype
 import TextContainer
 from SpecialCharacter import SpecialCharacter
 
