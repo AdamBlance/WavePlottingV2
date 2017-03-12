@@ -1,4 +1,5 @@
 import Fraction
+import Indice
 import pygame
 import pygame.freetype
 from pygame.locals import *
@@ -131,8 +132,6 @@ class TextContainer(pygame.Surface):
             total_to_point = sum([x.width for x in pointer_rect])
             pygame.draw.line(self, self.colour, (total_to_point, 0), (total_to_point, self.get_rect().height))
 
-    # Needs to return an index instead
-
     def backtrack_from_pointer(self):
 
         output = 0
@@ -142,13 +141,9 @@ class TextContainer(pygame.Surface):
                 array = self.all_symbols[:self.pointer_index]
                 for i in range(len(array)-1, -1, -1):
                     if array[i] == ' ':
-                        # output = array[i+1:]
                         output = i+1
                         break
-                # else:
-                #     output = array
 
-        # if len(output) != 0:
         track = self.pointer_index
         if self.pointer_index != output:
             track = output
@@ -203,6 +198,11 @@ class TextContainer(pygame.Surface):
                     self.backspace()
                 elif pressed == 'delete':
                     self.delete()
+                elif pressed == '^':
+                    self.is_current = False
+                    symbol = Indice.Indice(self.event_manager, self.font.size*0.7)
+                    symbol.indice.is_current = True
+                    self.add_symbol(symbol)
                 elif pressed == '/':
                     back = self.backtrack_from_pointer()
 

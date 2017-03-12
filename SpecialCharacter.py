@@ -27,6 +27,10 @@ class SpecialCharacter(pygame.Surface):
         super().__init__(size)
 
     def pointer_update(self):
+
+        self.leave_left = False
+        self.leave_right = False
+
         current_index = -1
         for i in range(len(self.text_container_order)):
             if self.text_container_order[i].is_current:

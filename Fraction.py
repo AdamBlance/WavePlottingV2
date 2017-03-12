@@ -49,9 +49,6 @@ class Fraction(SpecialCharacter):
 
     def update(self):
 
-        self.leave_left = False
-        self.leave_right = False
-
         self.denominator.update()
         self.numerator.update()
         self.pointer_update()
