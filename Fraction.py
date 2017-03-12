@@ -67,11 +67,14 @@ class Fraction(SpecialCharacter):
         for box in self.text_container_order:
             if box.leave_left:
                 if current_index == 0:
+                    print('left left')
                     box.is_current = False
                     self.leave_left = True
                 else:
                     box.is_current = False
-                    self.text_container_order[current_index-1].is_current = True
+                    current_box = self.text_container_order[current_index-1]
+                    current_box.is_current = True
+                    current_box.pointer_index = len(current_box.all_symbols)
 
             elif box.leave_right:
                 if current_index == len(self.text_container_order)-1:
@@ -79,4 +82,7 @@ class Fraction(SpecialCharacter):
                     box.is_current = False
                 else:
                     box.is_current = False
-                    self.text_container_order[current_index+1].is_current = True
+                    current_box = self.text_container_order[current_index+1]
+                    current_box.is_current = True
+                    current_box.pointer_index = 0
+
