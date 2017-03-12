@@ -18,7 +18,7 @@ class Indice(SpecialCharacter):
         self.indice.render_symbols()
 
         rect = self.indice.get_rect()
-        total_height = rect.height*2.5
+        total_height = rect.height*1.5
 
         super().reinit_surface((rect.width, total_height))
 

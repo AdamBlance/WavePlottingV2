@@ -134,7 +134,6 @@ class TextContainer(pygame.Surface):
             pygame.draw.line(self, self.colour, (total_to_point, 0), (total_to_point, self.get_rect().height))
 
     def backtrack_from_pointer(self):
-
         output = 0
 
         if self.all_symbols:
@@ -151,6 +150,24 @@ class TextContainer(pygame.Surface):
             while self.all_symbols[:self.pointer_index][track] in ['+', '-', '*']:
                 track += 1
         return track
+
+    def compile_expression(self):
+        full_expr = ''
+        for item in self.all_symbols:
+            if type(item) == str:
+                full_expr += item
+            elif type(item) == Fraction.Fraction:
+                full_expr += '((%s)/(%s))' % (item.numerator.compile_expression(),
+                                              item.denominator.compile_expression())
+            elif type(item) == Indice.Indice:
+                full_expr += '**(%s)' % item.indice.compile_expression()
+            elif type(item) == Root.Root:
+                if item.has_nroot:
+                    full_expr += 'root(%s, %s)' % (item.contents.compile_expression(), item.nth_root.compile_expression())
+                else:
+                    full_expr += 'sqrt(%s)' % item.contents.compile_expression()
+
+        return full_expr
 
     def update(self):
 
@@ -199,6 +216,8 @@ class TextContainer(pygame.Surface):
                     self.backspace()
                 elif pressed == 'delete':
                     self.delete()
+                elif pressed == '(':
+                    print(self.compile_expression())
                 elif pressed == '%':
                     self.is_current = False
                     symbol = Root.Root(self.event_manager, self.font.size, True)
