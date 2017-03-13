@@ -13,8 +13,6 @@ class Root(SpecialCharacter):
             self.nth_root = TextContainer.TextContainer(self.event_manager, font_size*0.6)
         self.contents = TextContainer.TextContainer(self.event_manager, font_size)
 
-        self.render_symbol()
-
         if self.has_nroot:
             super().__init__(self.event_manager, [self.nth_root, self.contents])
         else:

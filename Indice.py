@@ -9,8 +9,6 @@ class Indice(SpecialCharacter):
 
         self.indice = TextContainer.TextContainer(self.event_manager, font_size)
 
-        self.render_symbol()
-
         super().__init__(self.event_manager, [self.indice])
 
     def render_symbol(self):

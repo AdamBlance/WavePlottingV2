@@ -21,8 +21,6 @@ class Fraction(SpecialCharacter):
         if bottom is not None:
             self.denominator.set_symbols_to(bottom)
 
-        self.render_symbol()
-
         super().__init__(self.event_manager, [self.numerator, self.denominator])
 
     def render_symbol(self):

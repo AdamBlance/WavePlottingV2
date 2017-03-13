@@ -1,5 +1,6 @@
 import Fraction
 import Indice
+import Brackets
 import Root
 import pygame
 import pygame.freetype
@@ -44,6 +45,8 @@ class TextContainer(pygame.Surface):
         self.pointer_visible = True
 
         self.special_character_index = 0
+
+        self.parsed = None
 
         if size is None:
             self.is_master_container = False
@@ -166,8 +169,17 @@ class TextContainer(pygame.Surface):
                     full_expr += 'root(%s, %s)' % (item.contents.compile_expression(), item.nth_root.compile_expression())
                 else:
                     full_expr += 'sqrt(%s)' % item.contents.compile_expression()
+            elif type(item) == Brackets.Brackets:
+                full_expr += '(%s)' % item.contents.compile_expression()
 
         return full_expr
+
+    def parse_expression(self, expr):
+        try:
+            print(expr)
+            self.parsed = parse_expr(expr, transformations=self.parsing_flags)
+        except SyntaxError:
+            print('nah')
 
     def update(self):
 
@@ -175,6 +187,11 @@ class TextContainer(pygame.Surface):
         self.leave_right = False
 
         self.fill(pygame.Color('black'))
+
+        if self.event_manager.key_pressed == K_RETURN:
+            if self.is_master_container:
+                test = self.compile_expression()
+                self.parse_expression(test)
 
         if self.event_manager.key_pressed == K_RIGHT and self.is_current:
             self.event_manager.key_pressed = None
@@ -217,7 +234,10 @@ class TextContainer(pygame.Surface):
                 elif pressed == 'delete':
                     self.delete()
                 elif pressed == '(':
-                    print(self.compile_expression())
+                    self.is_current = False
+                    symbol = Brackets.Brackets(self.event_manager, self.font.size)
+                    symbol.contents.is_current = True
+                    self.add_symbol(symbol)
                 elif pressed == '%':
                     self.is_current = False
                     symbol = Root.Root(self.event_manager, self.font.size, True)
