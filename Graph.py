@@ -5,7 +5,9 @@ from pygame.locals import *
 from sympy import *
 from math import degrees
 from fractions import Fraction
+import numpy as np
 
+np.seterr(invalid='ignore')
 
 class Graph(GUIObject):
     function_resolution = 1  # int > 0
@@ -63,9 +65,12 @@ class Graph(GUIObject):
         subbable = lambdify(self.x, function, 'numpy')
         for pixel in range(0, self.size[0], self.function_resolution):
             x_coord = self.screen_to_graph_x(pixel)
-            subbed = subbable(x_coord)
-            y_coord = self.graph_to_screen_y(subbed)
-            point_array.append((pixel, y_coord))
+            try:
+                subbed = subbable(x_coord)
+                y_coord = self.graph_to_screen_y(subbed)
+                point_array.append((pixel, y_coord))
+            except ValueError:
+                pass
         pygame.draw.lines(self, colour, False, point_array)
 
     @staticmethod

@@ -8,12 +8,23 @@ class Sidebar(GUIObject):
 
     def __init__(self, size, main_colour, tab_colour):
 
+        self.size = size
+
+        self.colour = main_colour
+        self.colourt = tab_colour
+
+        self.size = size
+
         super().__init__([-size[0], 0], (size[0] + 10, size[1]))
         self.transition = Transition(self.pos[0], size[0])
         self.fill(main_colour)
         pygame.draw.rect(self, tab_colour, pygame.Rect((size[0], 0), (10, size[1])))
 
     def update(self):
+
+        self.fill(self.colour)
+        pygame.draw.rect(self, self.colourt, pygame.Rect((self.size[0]-10, 0), (11, self.size[1])))
+
         self.pos[0] = self.transition.pos
 
         mouse_pos = pygame.mouse.get_pos()

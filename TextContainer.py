@@ -1,7 +1,8 @@
 import Fraction
 import Indice
 import Brackets
-import Root
+import Sqrt
+import NthRoot
 import random
 import pygame
 import pygame.freetype
@@ -31,8 +32,10 @@ class TextContainer(pygame.Surface):
 
         self.event_manager = event_manager
         self.is_current = True
+        self.is_on = True
 
-        self.func_dict = {'sqrt': Root.Root(self.event_manager, self.font.size, True)}
+        self.func_dict = {'sqrt': Sqrt.Sqrt,
+                          'nthroot': NthRoot.NthRoot}
 
         self.leave_left = False
         self.leave_right = False
@@ -170,11 +173,10 @@ class TextContainer(pygame.Surface):
                                               item.denominator.compile_expression())
             elif type(item) == Indice.Indice:
                 full_expr += '**(%s)' % item.indice.compile_expression()
-            elif type(item) == Root.Root:
-                if item.has_nroot:
-                    full_expr += 'root(%s, %s)' % (item.contents.compile_expression(), item.nth_root.compile_expression())
-                else:
-                    full_expr += 'sqrt(%s)' % item.contents.compile_expression()
+            elif type(item) == Sqrt.Sqrt:
+                full_expr += 'sqrt(%s)' % item.contents.compile_expression()
+            elif type(item) == NthRoot.NthRoot:
+                full_expr += 'root(%s, %s)' % (item.contents.compile_expression(), item.nth_root.compile_expression())
             elif type(item) == Brackets.Brackets:
                 full_expr += '(%s)' % item.contents.compile_expression()
 
@@ -182,10 +184,9 @@ class TextContainer(pygame.Surface):
 
     def parse_expression(self, expr):
         try:
-            print(expr)
             self.parsed = parse_expr(expr, transformations=self.parsing_flags)
         except SyntaxError:
-            print('nah')
+            pass
 
     def update(self):
 
@@ -195,7 +196,7 @@ class TextContainer(pygame.Surface):
         self.fill(pygame.Color('black'))
 
         if self.event_manager.key_pressed == K_RETURN:
-            if self.is_master_container and self.is_current:
+            if self.is_master_container:
                 test = self.compile_expression()
                 self.parse_expression(test)
 
@@ -244,12 +245,6 @@ class TextContainer(pygame.Surface):
                     symbol = Brackets.Brackets(self.event_manager, self.font.size)
                     symbol.contents.is_current = True
                     self.add_symbol(symbol)
-                elif pressed == '%':
-                    self.is_current = False
-                    symbol = Root.Root(self.event_manager, self.font.size, True)
-                    symbol.nth_root.is_current = True
-                    symbol.contents.is_current = False
-                    self.add_symbol(symbol)
                 elif pressed == '^':
                     self.is_current = False
                     symbol = Indice.Indice(self.event_manager, self.font.size*0.7)
@@ -297,10 +292,10 @@ class TextContainer(pygame.Surface):
 
                         self.is_current = False
 
-                        symbol = self.func_dict[func]()
+                        symbol = self.func_dict[func](self.event_manager, self.font.size)
                         for item in symbol.text_container_order:
                             item.is_current = False
-                        symbol.text_container_order[0] = True
+                        symbol.text_container_order[0].is_current = True
                         self.add_symbol(symbol)
 
         self.divided_symbols = backup

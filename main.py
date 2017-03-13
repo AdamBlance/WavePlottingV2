@@ -18,9 +18,17 @@ padding = 20
 max_cont = (screen_height // (text_container_height + padding)) - 2
 
 
+def delete_input(i):
+    TextContainer.all_text_entries.pop(i)
+    Button.all_buttons.pop(i)
+
+
 def create_new_text_container():
     if len(TextContainer.all_text_entries)-1 != max_cont:
         TextContainer(event_manager, 30, (300, text_container_height))
+        height = len(TextContainer.all_text_entries)*(text_container_height + padding)-50
+        number = len(TextContainer.all_text_entries)-1
+        Button(event_manager, (272, height), pygame.Color(200, 0, 0), 'X', delete_input, number)
 
 event_manager = EventManager()
 
@@ -45,29 +53,32 @@ while not event_manager.has_quit:
         bounds = mouse_pos[1] // (text_container_height + padding)
         if bounds < len(TextContainer.all_text_entries):
             for item in TextContainer.all_text_entries:
-                item.is_current = False
-            TextContainer.all_text_entries[bounds].is_current = True
+                item.is_on = False
+            TextContainer.all_text_entries[bounds].is_on = True
 
-    sidebar.update()
 
     try:
         graph.update()
-    except TypeError:
-        print(':(')
+    except TypeError or NameError:
+        pass
 
     toggle_button.update()
-    new_expr.update()
 
     main_surface.blit(graph, graph.pos)
 
-    main_surface.blit(sidebar, sidebar.pos)
+    sidebar.update()
 
     for i in range(len(TextContainer.all_text_entries)):
         container = TextContainer.all_text_entries[i]
-        container.update()
+        if container.is_on:
+            container.update()
         sidebar.blit(container, (0, i*(padding+text_container_height)))
 
-    sidebar.blit(new_expr, new_expr.pos)
+    for button in Button.all_buttons:
+        button.update()
+        sidebar.blit(button, button.pos)
+
+    main_surface.blit(sidebar, sidebar.pos)
     main_surface.blit(toggle_button, toggle_button.pos)
     pygame.display.update()
 
