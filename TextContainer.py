@@ -194,7 +194,7 @@ class TextContainer(pygame.Surface):
         self.fill(pygame.Color('black'))
 
         if self.event_manager.key_pressed == K_RETURN:
-            if self.is_master_container:
+            if self.is_master_container and self.is_current:
                 test = self.compile_expression()
                 self.parse_expression(test)
 

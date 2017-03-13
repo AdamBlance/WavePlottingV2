@@ -23,8 +23,7 @@ class SpecialCharacter(pygame.Surface):
         self.leave_left = False
         self.leave_right = False
 
-    @staticmethod
-    def reinit_surface(size):
+    def reinit_surface(self, size):
         super().__init__(size)
 
     def pointer_update(self):
