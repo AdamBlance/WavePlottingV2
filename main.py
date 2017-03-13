@@ -1,7 +1,9 @@
 from EventManager import EventManager
+from Graph import Graph
+from Sidebar import Sidebar
+from ToggleButton import ToggleButton
 from TextContainer import TextContainer
 import pygame.freetype
-
 
 screen_width = 1280
 screen_height = 720
@@ -18,6 +20,8 @@ while not event_manager.has_quit:
     main_surface.fill(pygame.Color('#461763'))
 
     text_container.update()
+
+
 
     main_surface.blit(text_container, (0, 0))
     pygame.display.update()
