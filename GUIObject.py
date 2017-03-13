@@ -4,7 +4,6 @@ import pygame.freetype
 pygame.font.init()
 pygame.freetype.init()
 
-
 # CONVERT ALL FONT TO FREETYPE
 
 

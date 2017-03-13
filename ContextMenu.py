@@ -67,5 +67,4 @@ class ContextMenu(GUIObject):
         index = local_y//self.segment_size[1]
 
         if (0 <= index <= len(self.entries)-1) and (0 <= local_x <= self.segment_size[0]):
-            # todo: Override equals
             return self.entries[index] == entry

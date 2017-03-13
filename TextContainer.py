@@ -2,6 +2,7 @@ import Fraction
 import Indice
 import Brackets
 import Root
+import random
 import pygame
 import pygame.freetype
 from pygame.locals import *
@@ -54,6 +55,10 @@ class TextContainer(pygame.Surface):
         else:
             self.is_master_container = True
             super().__init__(size)
+
+        if self.is_master_container:
+            self.rand_colour = pygame.Color(random.randint(0, 225), random.randint(0, 225), random.randint(0, 225))
+            self.all_text_entries.append(self)
 
     def backspace(self):
         if self.pointer_index != 0:
@@ -134,7 +139,7 @@ class TextContainer(pygame.Surface):
 
         if self.pointer_visible and self.is_current:
             total_to_point = sum([x.width for x in pointer_rect])
-            pygame.draw.line(self, self.colour, (total_to_point, 0), (total_to_point, self.get_rect().height))
+            pygame.draw.line(self, self.colour, (total_to_point, 0), (total_to_point, total_size.height))
 
     def backtrack_from_pointer(self):
         output = 0

@@ -1,4 +1,5 @@
 from GUIObject import GUIObject
+from TextContainer import TextContainer
 import pygame
 from pygame.locals import *
 from sympy import *
@@ -57,7 +58,7 @@ class Graph(GUIObject):
         y = ((y_coord - self.y_max) / (self.y_min - self.y_max)) * self.size[1]
         return int(y)
 
-    def draw_function(self, function):
+    def draw_function(self, function, colour):
         point_array = []
         subbable = lambdify(self.x, function, 'numpy')
         for pixel in range(0, self.size[0], self.function_resolution):
@@ -65,7 +66,7 @@ class Graph(GUIObject):
             subbed = subbable(x_coord)
             y_coord = self.graph_to_screen_y(subbed)
             point_array.append((pixel, y_coord))
-        pygame.draw.lines(self, pygame.Color('red'), False, point_array)
+        pygame.draw.lines(self, colour, False, point_array)
 
     @staticmethod
     def limit_lines(current_lines, spacing):
@@ -178,7 +179,11 @@ class Graph(GUIObject):
             self.y_max = (self.y_max - graph_pos[1]) * 1.1 + graph_pos[1]
             
         self.draw_gridlines()
-        self.draw_function(sin(self.x))
+
+        for box in TextContainer.all_text_entries:
+            if box.parsed:
+                self.draw_function(box.parsed, box.rand_colour)
+
         origin = (self.graph_to_screen_x(0), self.graph_to_screen_y(0))
         if (-20 < origin[0] < self.size[0]+20) and (-20 < origin[1] < self.size[1]+20):
             pygame.draw.circle(self, pygame.Color('blue'), origin, 5)

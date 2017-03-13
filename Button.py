@@ -6,8 +6,8 @@ pygame.font.init()
 class Button(GUIObject):
     all_buttons = []
 
-    highlighted = pygame.Color((150, 150, 150))
-    pressed = pygame.Color((75, 75, 75))
+    highlighted = pygame.Color(150, 150, 150)
+    pressed = pygame.Color(75, 75, 75)
 
     def __init__(self, event_manager, pos, colour, text, function, *args, size=None, gui_object_blitted_to=None):
 
@@ -45,9 +45,15 @@ class Button(GUIObject):
         rendered_text = self.main_font.render(text, True, (255, 255, 255))
         super().__init__(pos, self.size)
 
-        self.state0.blit(rendered_text, (text_padding, text_padding/2))
-        self.state1.blit(rendered_text, (text_padding, text_padding/2))
-        self.state2.blit(rendered_text, (text_padding, text_padding/2))
+        if size is None:
+            self.state0.blit(rendered_text, (text_padding, text_padding/2))
+            self.state1.blit(rendered_text, (text_padding, text_padding/2))
+            self.state2.blit(rendered_text, (text_padding, text_padding/2))
+        else:
+            text = rendered_text.get_rect()
+            self.state0.blit(rendered_text, (self.size[0]/2 - text.width/2, self.size[1]/2 - text.height/2))
+            self.state1.blit(rendered_text, (self.size[0]/2 - text.width/2, self.size[1]/2 - text.height/2))
+            self.state2.blit(rendered_text, (self.size[0]/2 - text.width/2, self.size[1]/2 - text.height/2))
 
         self.all_buttons.append(self)
 

@@ -33,8 +33,8 @@ class ToggleButton(GUIObject):
         self.pre_mask = pygame.Surface((self.toggle_length, self.height))
         self.pre_mask_x = 0
 
-        pygame.draw.rect(self.pre_mask, pygame.Color((200, 0, 0)), pygame.Rect((0, 0), (self.side_size, self.height)))
-        pygame.draw.rect(self.pre_mask, pygame.Color((0, 200, 0)), pygame.Rect((self.side_size + self.middle_size, 0),
+        pygame.draw.rect(self.pre_mask, pygame.Color(200, 0, 0), pygame.Rect((0, 0), (self.side_size, self.height)))
+        pygame.draw.rect(self.pre_mask, pygame.Color(0, 200, 0), pygame.Rect((self.side_size + self.middle_size, 0),
                                                                              (self.side_size, self.height)))
 
         pygame.draw.rect(self.pre_mask, self.middle_colour, pygame.Rect((self.side_size, 0),
