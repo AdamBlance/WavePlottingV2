@@ -14,9 +14,6 @@ from sympy.parsing.sympy_parser import \
     convert_xor
 pygame.freetype.init()
 
-# Allowing y= AND x= functions is going to take too long to implement
-# For the moment will not support an '=' symbol
-
 
 class TextContainer(pygame.Surface):
 
@@ -34,6 +31,8 @@ class TextContainer(pygame.Surface):
 
         self.event_manager = event_manager
         self.is_current = True
+
+        self.func_dict = {'sqrt': Root.Root(self.event_manager, self.font.size, True)}
 
         self.leave_left = False
         self.leave_right = False
@@ -151,6 +150,8 @@ class TextContainer(pygame.Surface):
                     if array[i] == ' ':
                         output = i+1
                         break
+            else:
+                output = self.pointer_index
 
         track = self.pointer_index
         if self.pointer_index != output:
@@ -246,9 +247,8 @@ class TextContainer(pygame.Surface):
                 elif pressed == '%':
                     self.is_current = False
                     symbol = Root.Root(self.event_manager, self.font.size, True)
-                    # symbol.contents.is_current = True
-                    symbol.contents.is_current = False
                     symbol.nth_root.is_current = True
+                    symbol.contents.is_current = False
                     self.add_symbol(symbol)
                 elif pressed == '^':
                     self.is_current = False
@@ -277,6 +277,33 @@ class TextContainer(pygame.Surface):
                 else:
                     self.add_symbol(pressed)
                     self.pointer_index += 1
+
+        backup = self.divided_symbols.copy()
+        self.divide_symbols(len(self.all_symbols))
+
+        for i in range(len(self.divided_symbols)):
+            for func in self.func_dict:
+                if type(self.divided_symbols[i]) == str:
+                    search = self.divided_symbols[i].find(func)
+                    if search != -1:
+                        all_len = 0
+                        for x in range(i):
+                            if type(self.divided_symbols[x]) == str:
+                                all_len += len(self.divided_symbols[x])
+                            else:
+                                all_len += 1
+                        all_len += search
+                        del self.all_symbols[all_len:all_len + len(func)]
+
+                        self.is_current = False
+
+                        symbol = self.func_dict[func]()
+                        for item in symbol.text_container_order:
+                            item.is_current = False
+                        symbol.text_container_order[0] = True
+                        self.add_symbol(symbol)
+
+        self.divided_symbols = backup
 
         if self.event_manager.total_ticks % 20 == 0:
             if self.pointer_visible:
