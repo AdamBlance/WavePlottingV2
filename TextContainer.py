@@ -32,7 +32,7 @@ class TextContainer(pygame.Surface):
 
         self.event_manager = event_manager
         self.is_current = True
-        self.is_on = True
+        self.is_on = False
 
         self.func_dict = {'sqrt': Sqrt.Sqrt,
                           'nthroot': NthRoot.NthRoot}

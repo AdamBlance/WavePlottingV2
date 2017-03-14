@@ -1,5 +1,5 @@
 from GUIObject import GUIObject
-from TextContainer import TextContainer
+from FunctionBox import FunctionBox
 import pygame
 from pygame.locals import *
 from sympy import *
@@ -184,9 +184,9 @@ class Graph(GUIObject):
             
         self.draw_gridlines()
 
-        for box in TextContainer.all_text_entries:
-            if box.parsed:
-                self.draw_function(box.parsed, box.rand_colour)
+        for box in FunctionBox.all_function_boxes:
+            if box.text_entry.parsed:
+                self.draw_function(box.text_entry.parsed, box.text_entry.rand_colour)
 
         origin = (self.graph_to_screen_x(0), self.graph_to_screen_y(0))
         if (-20 < origin[0] < self.size[0]+20) and (-20 < origin[1] < self.size[1]+20):
