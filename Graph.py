@@ -7,7 +7,7 @@ from math import degrees
 from fractions import Fraction
 import numpy as np
 
-np.seterr(invalid='ignore')
+np.seterr(all='ignore')
 
 
 class Graph(GUIObject):
@@ -70,7 +70,7 @@ class Graph(GUIObject):
                 subbed = subbable(x_coord)
                 y_coord = self.graph_to_screen_y(subbed)
                 point_array.append((pixel, y_coord))
-            except ValueError:
+            except ValueError or ZeroDivisionError:
                 pass
         pygame.draw.lines(self, colour, False, point_array)
 
