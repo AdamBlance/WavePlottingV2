@@ -9,6 +9,7 @@ import numpy as np
 
 np.seterr(invalid='ignore')
 
+
 class Graph(GUIObject):
     function_resolution = 1  # int > 0
     graph_font = pygame.font.Font('media/DejaVuSans.ttf', 12)
@@ -60,9 +61,9 @@ class Graph(GUIObject):
         y = ((y_coord - self.y_max) / (self.y_min - self.y_max)) * self.size[1]
         return int(y)
 
-    def draw_function(self, function, colour):
+    def draw_function(self, expression, colour):
         point_array = []
-        subbable = lambdify(self.x, function, 'numpy')
+        subbable = lambdify(self.x, expression, 'numpy')
         for pixel in range(0, self.size[0], self.function_resolution):
             x_coord = self.screen_to_graph_x(pixel)
             try:
@@ -134,15 +135,13 @@ class Graph(GUIObject):
                 x_text_pos = origin_y
                 self.x_lines_offset = False
 
-            # TODO: Scientific notation
-            # TODO: Fix the rounding thing
-
             unit_string = '0.0'
             if not (self.y_lines_offset and graph_x == 0):
                 if x_numbers != 0:
                     if self.is_radians:
                         coefficient = Fraction(round(x_numbers/float(pi), 8))
-                        unit_string = ('%s|%s\u03C0' % (coefficient.numerator, coefficient.denominator)).replace('|1', '')
+                        unit_string = ('%s|%s\u03C0' % (coefficient.numerator,
+                                                        coefficient.denominator)).replace('|1', '')
                     else:
                         unit_string = str(x_numbers)
 

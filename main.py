@@ -18,9 +18,9 @@ padding = 20
 max_cont = (screen_height // (text_container_height + padding)) - 2
 
 
-def delete_input(i):
-    TextContainer.all_text_entries.pop(i)
-    Button.all_buttons.pop(i)
+def delete_input(index):
+    TextContainer.all_text_entries.pop(index)
+    Button.all_buttons.pop(index)
 
 
 def create_new_text_container():
@@ -56,7 +56,6 @@ while not event_manager.has_quit:
                 item.is_on = False
             TextContainer.all_text_entries[bounds].is_on = True
 
-
     try:
         graph.update()
     except TypeError or NameError:
@@ -83,11 +82,3 @@ while not event_manager.has_quit:
     pygame.display.update()
 
 pygame.quit()
-
-
-# really need to complete reinitialising
-# the steps are
-# supply text to fraction (initially or once object has been created)
-# get bounding box for text
-# re-initialise the surface by calling pygame.Surface.__init__ with the new bounds
-# render the new text and blit to the surface of the object

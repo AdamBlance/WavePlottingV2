@@ -200,6 +200,7 @@ class TextContainer(pygame.Surface):
                 test = self.compile_expression()
                 self.parse_expression(test)
 
+        pressed_space = False
         if self.event_manager.key_pressed == K_RIGHT and self.is_current:
             self.event_manager.key_pressed = None
             if self.pointer_index != len(self.all_symbols):
@@ -223,6 +224,12 @@ class TextContainer(pygame.Surface):
             else:
                 if not self.is_master_container:
                     self.leave_left = True
+
+        if self.event_manager.key_pressed == K_SPACE and self.is_current:
+            if not self.pointer_index != len(self.all_symbols):
+                if not self.is_master_container:
+                    self.leave_right = True
+                    pressed_space = True
 
         for i in range(len(self.all_symbols)):
             if type(self.all_symbols[i]) != str:
@@ -250,13 +257,18 @@ class TextContainer(pygame.Surface):
                     symbol = Indice.Indice(self.event_manager, self.font.size*0.7)
                     symbol.indice.is_current = True
                     self.add_symbol(symbol)
+                elif pressed == ' ':
+                    if not pressed_space:
+                        self.add_symbol(pressed)
+                        self.pointer_index += 1
                 elif pressed == '/':
                     back = self.backtrack_from_pointer()
 
                     if back != self.pointer_index:
                         temp = self.all_symbols.copy()
                         del self.all_symbols[back:self.pointer_index]
-                        symbol = Fraction.Fraction(self.event_manager, self.font.size*0.8, top=temp[back:self.pointer_index])
+                        symbol = Fraction.Fraction(self.event_manager, self.font.size*0.8,
+                                                   top=temp[back:self.pointer_index])
                         self.pointer_index -= self.pointer_index-back
                         symbol.numerator.is_current = False
                         symbol.denominator.is_current = True

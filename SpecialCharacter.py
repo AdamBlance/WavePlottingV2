@@ -56,6 +56,3 @@ class SpecialCharacter(pygame.Surface):
                     current_box = self.text_container_order[current_index+1]
                     current_box.is_current = True
                     current_box.pointer_index = 0
-
-    # TODO: Move to next box when space is pressed
-    # TODO: Make the delete key move back into previous box
