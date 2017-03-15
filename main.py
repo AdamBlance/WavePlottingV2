@@ -45,10 +45,10 @@ while not event_manager.has_quit:
     mouse_pos = pygame.mouse.get_pos()
     if event_manager.lmb_down and 0 < mouse_pos[0] < 300:
         bounds = mouse_pos[1] // (text_container_height + padding)
-        if bounds < len(TextContainer.all_text_entries):
-            for item in TextContainer.all_text_entries:
-                item.is_on = False
-            TextContainer.all_text_entries[bounds].is_on = True
+        if bounds < len(FunctionBox.all_function_boxes):
+            for item in FunctionBox.all_function_boxes:
+                item.text_entry.is_on = False
+            FunctionBox.all_function_boxes[bounds].text_entry.is_on = True
 
     try:
         graph.update()
